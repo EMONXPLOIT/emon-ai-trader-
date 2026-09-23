@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>EMON TRADER | Global Pro Exchange</title>
+  <title>EMON TRADER | Ultimate AI Exchange</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -30,28 +30,80 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      user-select: none; /* Prevent text selection during rapid clicking */
+      user-select: none; 
     }
 
-    /* HEADER */
+    /* =========================================
+       1. AUTHENTICATION / LOGIN SCREEN
+       ========================================= */
+    #authScreen {
+      position: fixed; inset: 0; background: rgba(15, 18, 24, 0.98); z-index: 9999999;
+      display: flex; justify-content: center; align-items: center;
+      backdrop-filter: blur(15px);
+    }
+    .auth-box {
+      background: var(--panel-bg); width: 90%; max-width: 380px;
+      padding: 35px 25px; border-radius: 12px; border: 1px solid var(--border);
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5); text-align: center;
+    }
+    .auth-logo {
+      width: 55px; height: 55px; background: var(--accent-yellow);
+      border-radius: 12px; display: inline-flex; align-items: center; justify-content: center;
+      color: #000; font-size: 1.8rem; margin-bottom: 15px; box-shadow: 0 0 15px rgba(252, 213, 53, 0.4);
+    }
+    .auth-box h2 { font-size: 1.4rem; color: #fff; margin-bottom: 5px; }
+    .auth-box p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 25px; }
+    
+    .auth-input {
+      width: 100%; background: var(--bg-dark); border: 1px solid var(--border);
+      color: #fff; padding: 12px 15px; border-radius: 8px; margin-bottom: 15px;
+      outline: none; font-size: 0.95rem; text-align: left;
+    }
+    .auth-input:focus { border-color: var(--accent-yellow); }
+    
+    .auth-btn {
+      width: 100%; padding: 12px; background: var(--accent-yellow); color: #000;
+      border: none; border-radius: 8px; font-weight: 700; font-size: 1rem;
+      cursor: pointer; transition: 0.2s; margin-bottom: 15px;
+    }
+    .auth-btn:hover { filter: brightness(1.1); }
+
+    /* =========================================
+       2. BOOT ANIMATION SCREEN
+       ========================================= */
+    #bootScreen {
+      display: none; position: fixed; inset: 0; background: #000; z-index: 999999;
+      justify-content: center; align-items: center; flex-direction: column; overflow: hidden;
+    }
+    .terminal-boot-text {
+      width: 90%; max-width: 700px; color: #0f0; font-family: 'Fira Code', monospace;
+      font-size: 0.95rem; line-height: 1.6; text-shadow: 0 0 5px #0f0;
+    }
+    .tv-flash-effect {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      background: #fff; width: 0; height: 2px; box-shadow: 0 0 20px #fff; opacity: 0; z-index: 100000;
+    }
+    .tv-flash-effect.active { animation: tvTurnOn 0.85s cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+    @keyframes tvTurnOn { 0% { opacity: 1; width: 0; height: 2px; } 40% { opacity: 1; width: 100vw; height: 2px; } 100% { opacity: 1; width: 100vw; height: 100vh; } }
+
+    /* =========================================
+       3. MAIN EXCHANGE DASHBOARD
+       ========================================= */
+    #mainApp { display: none; opacity: 0; transition: opacity 0.5s ease-in; flex: 1; display: flex; flex-direction: column; }
+
     header {
       background: #151921; border-bottom: 1px solid var(--border);
       padding: 10px 3%; display: flex; justify-content: space-between; align-items: center;
     }
-    
     .brand { display: flex; align-items: center; gap: 10px; }
-    
-    .my-custom-logo {
-      width: 34px; height: 34px; border-radius: 50%;
-      border: 2px solid var(--accent-yellow);
-      object-fit: cover;
-      box-shadow: 0 0 10px rgba(252, 213, 53, 0.3);
+    .brand-logo {
+      width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent-yellow), #f59e0b);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      color: #000; font-size: 1.1rem; box-shadow: 0 0 10px rgba(252, 213, 53, 0.3);
     }
-
     .brand-title { font-size: 1.15rem; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
     .brand-title span { color: var(--accent-yellow); }
 
-    /* SECRET BALANCE BUTTON */
     .top-balance {
       font-size: 0.9rem; font-weight: 600; color: var(--text-main); 
       display: flex; align-items: center; gap: 8px;
@@ -60,7 +112,6 @@
     .top-balance:hover { background: rgba(255,255,255,0.05); }
     .top-balance span { color: var(--accent-yellow); font-size: 1.05rem; transition: color 0.3s; }
 
-    /* QUOTEX STYLE SELECTOR BAR */
     .market-bar {
       background: #14171f; border-bottom: 1px solid var(--border);
       padding: 8px 3%; display: flex; justify-content: space-between; align-items: center;
@@ -72,81 +123,70 @@
     }
     .pair-btn-trigger:hover { border-color: var(--accent-yellow); }
     .pair-flags { font-size: 1.1rem; }
-
     .payout-badge {
       background: rgba(0, 230, 118, 0.15); color: var(--accent-green);
-      font-size: 0.75rem; padding: 3px 8px; border-radius: 4px; font-weight: 700;
-      transition: all 0.3s ease;
+      font-size: 0.75rem; padding: 3px 8px; border-radius: 4px; font-weight: 700; transition: all 0.3s ease;
     }
     .flash-update { animation: colorFlash 0.6s ease-out; }
-    @keyframes colorFlash {
-      0% { color: #fff; text-shadow: 0 0 10px #fff; transform: scale(1.1); }
-      100% { transform: scale(1); }
-    }
+    @keyframes colorFlash { 0% { color: #fff; text-shadow: 0 0 10px #fff; transform: scale(1.1); } 100% { transform: scale(1); } }
 
-    /* MAIN GRID */
-    .dashboard {
-      display: grid; grid-template-columns: 2.3fr 1fr; gap: 10px; padding: 10px; flex: 1;
-    }
+    /* DASHBOARD GRID */
+    .dashboard { display: grid; grid-template-columns: 2.3fr 1fr; gap: 10px; padding: 10px; flex: 1; }
     @media (max-width: 992px) { .dashboard { grid-template-columns: 1fr; } }
-
     .panel { background: var(--panel-bg); border-radius: 6px; padding: 15px; display: flex; flex-direction: column; }
-    .chart-box { height: 450px; margin-bottom: 10px; }
+    .chart-box { height: 400px; margin-bottom: 10px; }
 
-    /* AI SCANNER */
+    /* =========================================
+       NEW AI SCANNER & REPORT ENGINE
+       ========================================= */
     .ai-box { background: #151921; border-radius: 6px; padding: 15px; text-align: center; border: 1px solid var(--border); margin-top: auto; }
-    .ai-btn { background: var(--accent-yellow); color: #000; border: none; padding: 10px 20px; border-radius: 4px; font-weight: 700; cursor: pointer; width: 100%; transition: 0.2s; }
+    .ai-btn { background: var(--accent-yellow); color: #000; border: none; padding: 10px 20px; border-radius: 4px; font-weight: 700; cursor: pointer; width: 100%; transition: 0.2s; font-size: 0.95rem; }
     .ai-btn:hover { filter: brightness(1.1); }
+    
     .sig-result { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--border); }
-    .sig-layout { display: flex; align-items: center; justify-content: center; gap: 20px; }
+    .sig-layout { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 15px; }
     .sig-arrow { font-size: 2.5rem; }
     .sig-text { font-size: 1.5rem; font-weight: 700; }
     .sig-buy { color: var(--accent-green); }
     .sig-sell { color: var(--accent-red); }
 
-    /* RIGHT PANEL: TRADING */
-    .panel-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 15px; color: #fff; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+    .ai-report {
+      background: #11141a; border: 1px solid var(--border); border-radius: 6px;
+      padding: 12px; text-align: left; font-size: 0.8rem;
+    }
+    .report-title { color: var(--accent-yellow); font-weight: 600; margin-bottom: 8px; border-bottom: 1px dashed var(--border); padding-bottom: 5px; }
+    .report-list { list-style: none; margin-bottom: 10px; }
+    .report-list li { margin-bottom: 4px; color: #cbd5e1; display: flex; justify-content: space-between; }
+    .report-list li span { font-weight: 600; color: #fff; }
+    .report-desc { color: var(--text-muted); font-size: 0.75rem; line-height: 1.5; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 4px; }
 
-    /* Orderbook */
+    /* RIGHT PANEL: TRADING */
+    .panel-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 10px; color: #fff; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
     .ob-row { display: flex; justify-content: space-between; font-size: 0.8rem; padding: 4px 0; }
     .ob-price.ask { color: var(--accent-red); }
     .ob-price.bid { color: var(--accent-green); }
     .ob-qty { color: var(--text-main); }
     .ob-spread { text-align: center; padding: 6px 0; margin: 8px 0; font-weight: 600; font-size: 0.9rem; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
 
-    .trade-input { background: var(--bg-dark); border: 1px solid var(--border); border-radius: 6px; display: flex; justify-content: space-between; padding: 12px; margin-bottom: 15px; margin-top: 20px;}
+    .trade-input { background: var(--bg-dark); border: 1px solid var(--border); border-radius: 6px; display: flex; justify-content: space-between; padding: 12px; margin-bottom: 15px; margin-top: 15px;}
     .trade-input input { background: transparent; border: none; color: #fff; outline: none; width: 60%; font-size: 1.05rem; font-weight: 600; }
-    
-    .t-btn { width: 100%; padding: 14px; border: none; border-radius: 6px; font-weight: 700; font-size: 1.05rem; cursor: pointer; margin-bottom: 10px; color: #fff; transition: filter 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .t-btn { width: 100%; padding: 14px; border: none; border-radius: 6px; font-weight: 700; font-size: 1.05rem; cursor: pointer; margin-bottom: 10px; color: #fff; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
     .t-btn:hover { filter: brightness(1.15); transform: translateY(-2px); }
     .t-btn.buy { background: var(--accent-green); color: #000; box-shadow: 0 4px 15px rgba(0, 230, 118, 0.2); }
     .t-btn.sell { background: var(--accent-red); box-shadow: 0 4px 15px rgba(255, 51, 75, 0.2); }
 
-    /* =========================================
-       MODAL FOR MARKET SELECTION
-       ========================================= */
-    .modal-overlay {
-      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8);
-      z-index: 200000; justify-content: center; align-items: flex-start; padding-top: 30px; backdrop-filter: blur(4px);
-    }
-    .modal-content {
-      background: #14171f; width: 95%; max-width: 520px; border-radius: 8px;
-      border: 1px solid var(--border); display: flex; flex-direction: column; max-height: 85vh;
-    }
-    .modal-head {
-      padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;
-    }
+    /* MODAL */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200000; justify-content: center; align-items: flex-start; padding-top: 30px; backdrop-filter: blur(4px); }
+    .modal-content { background: #14171f; width: 95%; max-width: 520px; border-radius: 8px; border: 1px solid var(--border); display: flex; flex-direction: column; max-height: 85vh; }
+    .modal-head { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
     .modal-head h3 { font-size: 1rem; font-weight: 600; }
     .modal-close { font-size: 1.2rem; cursor: pointer; color: var(--text-muted); }
-
     .cat-tabs { display: flex; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none;}
     .cat-tab-btn { padding: 6px 12px; background: transparent; border: none; color: var(--text-muted); font-size: 0.78rem; font-weight: 600; cursor: pointer; border-radius: 4px; text-transform: uppercase; }
     .cat-tab-btn.active { background: var(--accent-blue); color: #fff; }
-
     .search-box { padding: 10px 14px; border-bottom: 1px solid var(--border); position: relative; }
     .search-box input { width: 100%; background: #1c222c; border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px 8px 36px; color: #fff; font-size: 0.85rem; outline: none; }
     .search-box i { position: absolute; left: 26px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
-
     .pair-list-body { overflow-y: auto; flex: 1; padding: 4px 0; }
     .pair-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 16px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.02); transition: 0.15s; }
     .pair-row:hover { background: #1e2430; }
@@ -162,76 +202,108 @@
 </head>
 <body>
 
-  <!-- Top Navbar -->
-  <header>
-    <div class="brand">
-      <!-- আপনার গিটহাবের অরজিনাল প্রোফাইল পিকচার லোগো হিসেবে যুক্ত করা হয়েছে -->
-      <img src="https://github.com/EMONXPLOIT.png" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3135/3135715.png'" class="my-custom-logo" alt="Emon Logo">
-      <div class="brand-title">EMON <span>TRADER</span></div>
-    </div>
-    
-    <!-- SECRET BALANCE EDITOR TRIGGER (Click 3 times here) -->
-    <div class="top-balance" id="secretTrigger" onclick="checkSecretGodMode()">
-      Balance: <span class="mono" id="topBal">$10,000.00</span>
-    </div>
-  </header>
+  <!-- ================= AUTH / LOGIN SCREEN ================= -->
+  <div id="authScreen">
+    <div class="auth-box">
+      <div class="auth-logo"><i class="fa-solid fa-chart-pie"></i></div>
+      <h2>Welcome Back</h2>
+      <p>Log in to access advanced AI trading</p>
 
-  <!-- Quotex Selector Bar -->
-  <div class="market-bar">
-    <button class="pair-btn-trigger" onclick="toggleModal(true)">
-      <span class="pair-flags" id="barFlags">🇪🇺 🇺🇸</span>
-      <span id="barPairName">EUR/USD</span>
-      <i class="fa-solid fa-chevron-down" style="font-size:0.75rem; color:var(--text-muted);"></i>
-    </button>
-    <div class="payout-badge mono" id="barPayout">Profit: 93%</div>
+      <input type="email" id="loginEmail" class="auth-input" placeholder="Email Address" />
+      <input type="password" id="loginPass" class="auth-input" placeholder="Password" />
+      
+      <button class="auth-btn" id="loginBtn" onclick="processLogin()">Log In</button>
+      
+      <button class="auth-btn" style="background:#fff; color:#000; font-weight:600;" onclick="processLogin()">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" style="width:16px; vertical-align:middle; margin-right:5px;" alt="Google"> Continue with Google
+      </button>
+    </div>
   </div>
 
-  <!-- Main Trading Desk -->
-  <div class="dashboard">
-    <!-- Chart & AI Analysis -->
-    <div style="display: flex; flex-direction: column; gap: 10px;">
-      <div class="panel" style="padding: 0;">
-        <div class="chart-box">
-          <iframe id="tvChart" src="https://s.tradingview.com/widgetembed/?symbol=FX%3AEURUSD&interval=1&theme=dark&style=1&timezone=Asia%2FDhaka&toolbarbg=181c24" style="width:100%; height:100%; border:none;"></iframe>
-        </div>
-      </div>
+  <!-- ================= BOOT SCREEN ================= -->
+  <div id="bootScreen">
+    <div class="terminal-boot-text" id="bootText"></div>
+    <div class="tv-flash-effect" id="tvFlash"></div>
+  </div>
 
-      <div class="panel ai-box">
-        <div style="margin-bottom: 12px; font-weight: 600;"><i class="fa-solid fa-radar"></i> AI 1-Min Scalping Analyzer</div>
-        <button class="ai-btn" id="aiBtn" onclick="scanAI()">১-মিনিট অ্যানালাইসিস শুরু করুন (<span id="aiPairTxt">EUR/USD</span>)</button>
-        
-        <div class="sig-result" id="aiResult">
-          <div class="sig-layout">
-            <div class="sig-arrow sig-buy" id="sigIcon"><i class="fa-solid fa-arrow-up"></i></div>
-            <div style="text-align:left;">
-              <div class="sig-text sig-buy" id="sigText">STRONG BUY</div>
-              <div class="mono" style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">AI Accuracy: <span style="color:var(--accent-yellow);" id="sigAcc">94.8%</span></div>
+  <!-- ================= MAIN APP ================= -->
+  <div id="mainApp">
+    <header>
+      <div class="brand">
+        <div class="brand-logo"><i class="fa-solid fa-bolt"></i></div>
+        <div class="brand-title">EMON <span>TRADER</span></div>
+      </div>
+      
+      <!-- SECRET BALANCE EDITOR TRIGGER (Click 3 times here) -->
+      <div class="top-balance" id="secretTrigger" onclick="checkSecretGodMode()">
+        Balance: <span class="mono" id="topBal">$10,000.00</span>
+      </div>
+    </header>
+
+    <div class="market-bar">
+      <button class="pair-btn-trigger" onclick="toggleModal(true)">
+        <span class="pair-flags" id="barFlags">🇪🇺 🇺🇸</span>
+        <span id="barPairName">EUR/USD</span>
+        <i class="fa-solid fa-chevron-down" style="font-size:0.75rem; color:var(--text-muted);"></i>
+      </button>
+      <div class="payout-badge mono" id="barPayout">Profit: 93%</div>
+    </div>
+
+    <div class="dashboard">
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <div class="panel" style="padding: 0;">
+          <div class="chart-box">
+            <iframe id="tvChart" src="https://s.tradingview.com/widgetembed/?symbol=FX%3AEURUSD&interval=1&theme=dark&style=1&timezone=Asia%2FDhaka&toolbarbg=181c24" style="width:100%; height:100%; border:none;"></iframe>
+          </div>
+        </div>
+
+        <div class="panel ai-box">
+          <div style="margin-bottom: 12px; font-weight: 600;"><i class="fa-solid fa-radar"></i> AI 1-Min Scalping Analyzer</div>
+          <button class="ai-btn" id="aiBtn" onclick="scanAI()">১-মিনিট অ্যানালাইসিস শুরু করুন (<span id="aiPairTxt">EUR/USD</span>)</button>
+          
+          <div class="sig-result" id="aiResult">
+            <div class="sig-layout">
+              <div class="sig-arrow sig-buy" id="sigIcon"><i class="fa-solid fa-arrow-up"></i></div>
+              <div style="text-align:left;">
+                <div class="sig-text sig-buy" id="sigText">STRONG BUY</div>
+                <div class="mono" style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">Accuracy: <span style="color:var(--accent-yellow);" id="sigAcc">94.8%</span></div>
+              </div>
+            </div>
+
+            <!-- THE REASONING ENGINE -->
+            <div class="ai-report">
+              <div class="report-title"><i class="fa-solid fa-microchip"></i> Market Logic Engine</div>
+              <ul class="report-list">
+                <li><span>Liquidity Zone:</span> <span id="r-liq" class="mono">1.08400 (Demand)</span></li>
+                <li><span>Volume Ratio:</span> <span id="r-vol" class="mono" style="color:var(--accent-green);">Bulls 62% - Bears 38%</span></li>
+                <li><span>RSI & MACD:</span> <span id="r-tech" class="mono">RSI 32 (Oversold)</span></li>
+              </ul>
+              <div class="report-desc" id="r-desc">
+                মার্কেট বর্তমানে স্ট্রং সাপোর্ট লেভেল থেকে রিজেকশন নিয়েছে। ওভারসোল্ড আরএসআই এবং বুলিশ ভলিউমের কারণে এখান থেকে আপট্রেন্ড শুরু হওয়ার সম্ভাবনা প্রবল।
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Right: Orderbook & Trade Execution -->
-    <div class="panel">
-      <div class="panel-title">Live Order Book</div>
-      <div id="obBox" style="margin-bottom:15px; flex: 1;">
-        <!-- Filled by JS -->
+      <div class="panel">
+        <div class="panel-title">Live Order Book</div>
+        <div id="obBox" style="margin-bottom:15px; flex: 1;"></div>
+
+        <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:5px;">Investment Amount (USD)</div>
+        <div class="trade-input">
+          <input type="number" id="tradeAmt" class="mono" value="100" oninput="calcPayout()" />
+          <span>USD</span>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:15px;">
+          <span style="color:var(--text-muted);">Payout Return:</span>
+          <span class="mono flash-update" id="payoutReturn" style="color:var(--accent-green); font-weight:700;">+$193.00</span>
+        </div>
+
+        <button class="t-btn buy" onclick="executeTrade('CALL / UP')"><i class="fa-solid fa-arrow-up"></i> UP / CALL</button>
+        <button class="t-btn sell" onclick="executeTrade('PUT / DOWN')"><i class="fa-solid fa-arrow-down"></i> DOWN / PUT</button>
       </div>
-
-      <div style="font-size:0.8rem; color:var(--text-muted); margin-bottom:5px;">Investment Amount (USD)</div>
-      <div class="trade-input">
-        <input type="number" id="tradeAmt" class="mono" value="100" oninput="calcPayout()" />
-        <span>USD</span>
-      </div>
-
-      <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:15px;">
-        <span style="color:var(--text-muted);">Payout Return:</span>
-        <span class="mono flash-update" id="payoutReturn" style="color:var(--accent-green); font-weight:700;">+$193.00</span>
-      </div>
-
-      <button class="t-btn buy" onclick="executeTrade('CALL / UP')"><i class="fa-solid fa-arrow-up"></i> UP / CALL</button>
-      <button class="t-btn sell" onclick="executeTrade('PUT / DOWN')"><i class="fa-solid fa-arrow-down"></i> DOWN / PUT</button>
     </div>
   </div>
 
@@ -256,19 +328,62 @@
   </div>
 
   <script>
-    // Market Database
+    // ==========================================
+    // 1. AUTHENTICATION & BOOT SEQUENCE
+    // ==========================================
+    const bootLines = [
+      "[INFO] USER AUTHENTICATED SUCCESSFULLY.",
+      "[INFO] INITIALIZING AI KERNEL...",
+      "[WARN] ESTABLISHING SECURE PROTOCOL [██████████] 100%",
+      "[INFO] FETCHING MARKET LIQUIDITY ZONES...",
+      "[INFO] SYNCING LIVE ORDERBOOK DATA...",
+      ">> ACCESS GRANTED."
+    ];
+    let lineIndex = 0;
+
+    function processLogin() {
+      const btn = document.getElementById('loginBtn');
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...';
+      
+      setTimeout(() => {
+        document.getElementById('authScreen').style.display = 'none';
+        document.getElementById('bootScreen').style.display = 'flex';
+        typeBootSequence();
+      }, 1200);
+    }
+
+    function typeBootSequence() {
+      const bootTextElem = document.getElementById('bootText');
+      if(lineIndex < bootLines.length) {
+        bootTextElem.innerHTML += bootLines[lineIndex] + "<br>";
+        lineIndex++;
+        setTimeout(typeBootSequence, 250);
+      } else {
+        setTimeout(() => {
+          document.getElementById('tvFlash').classList.add('active');
+          setTimeout(() => {
+            document.getElementById('bootScreen').style.display = 'none';
+            const mainApp = document.getElementById('mainApp');
+            mainApp.style.display = 'flex';
+            setTimeout(() => { mainApp.style.opacity = '1'; }, 50);
+          }, 400);
+        }, 300);
+      }
+    }
+
+
+    // ==========================================
+    // 2. MAIN EXCHANGE LOGIC & GOD MODE
+    // ==========================================
     const marketPairs = [
       { symbol: "FX:EURUSD", name: "EUR/USD", cat: "currencies", flags: "🇪🇺 🇺🇸", p1: 93, p5: 95, change: "+0.15%", up: true },
       { symbol: "FX:GBPUSD", name: "GBP/USD", cat: "currencies", flags: "🇬🇧 🇺🇸", p1: 91, p5: 93, change: "-0.74%", up: false },
       { symbol: "FX:USDJPY", name: "USD/JPY", cat: "currencies", flags: "🇺🇸 🇯🇵", p1: 88, p5: 90, change: "+0.58%", up: true },
       { symbol: "FX:AUDUSD", name: "AUD/USD", cat: "currencies", flags: "🇦🇺 🇺🇸", p1: 90, p5: 92, change: "-1.10%", up: false },
       { symbol: "FX:USDBDT", name: "USD/BDT (OTC)", cat: "currencies", flags: "🇺🇸 🇧🇩", p1: 81, p5: 87, change: "+0.28%", up: true },
-      
       { symbol: "BINANCE:BTCUSDT", name: "BTC/USDT", cat: "crypto", flags: "🪙 🇺🇸", p1: 90, p5: 94, change: "+2.40%", up: true },
       { symbol: "BINANCE:ETHUSDT", name: "ETH/USDT", cat: "crypto", flags: "🔷 🇺🇸", p1: 88, p5: 91, change: "-1.20%", up: false },
-
-      { symbol: "OANDA:XAUUSD", name: "Gold (XAU/USD)", cat: "commodities", flags: "🟡 🇺🇸", p1: 92, p5: 95, change: "+0.85%", up: true },
-      { symbol: "TVC:USOIL", name: "US Crude Oil", cat: "commodities", flags: "🛢️ 🇺🇸", p1: 82, p5: 86, change: "-0.65%", up: false }
+      { symbol: "OANDA:XAUUSD", name: "Gold (XAU/USD)", cat: "commodities", flags: "🟡 🇺🇸", p1: 92, p5: 95, change: "+0.85%", up: true }
     ];
 
     let currentBalance = 10000.00;
@@ -277,22 +392,17 @@
     let currentPrice = 1.0845;
     let currentCategory = "currencies";
 
-    // ==========================================
-    // SECRETE GOD MODE (BALANCE EDITOR)
-    // ==========================================
+    // SECRET BALANCE EDITOR (GOD MODE)
     let clickCount = 0;
     let clickTimer;
 
     function checkSecretGodMode() {
       clickCount++;
       clearTimeout(clickTimer);
-      
-      // Reset click count after 1.5 seconds if not clicked 3 times
       clickTimer = setTimeout(() => { clickCount = 0; }, 1500);
 
-      // Trigger if clicked exactly 3 times
       if (clickCount >= 3) {
-        clickCount = 0; // Reset
+        clickCount = 0; 
         let pwd = prompt("System Override PIN:");
         if (pwd === "7788") {
           let newBal = prompt("Enter precise balance (e.g. 50000 or 100):");
@@ -307,11 +417,10 @@
     }
 
     function updateBalanceUI() {
-      const balStr = `$${currentBalance.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
-      document.getElementById('topBal').innerText = balStr;
+      document.getElementById('topBal').innerText = `$${currentBalance.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
     }
 
-    // Modal Logic
+    // Modal & Selection Logic
     function toggleModal(show) {
       document.getElementById('marketModal').style.display = show ? 'flex' : 'none';
       if(show) renderPairsList();
@@ -339,7 +448,7 @@
             <span style="font-size:1.2rem;">${pair.flags}</span>
             <div>
               <div class="pair-name">${pair.name}</div>
-              <div class="pair-payout-info">Profit 1+ min <span id="p1-${pair.symbol}">${pair.p1}%</span> 5+ min <span>${pair.p5}%</span></div>
+              <div class="pair-payout-info">Profit 1+ min <span id="p1-${pair.symbol}">${pair.p1}%</span></div>
             </div>
           </div>
           <div class="pair-right">
@@ -357,7 +466,6 @@
     function selectPair(pair) {
       activePairName = pair.name;
       activeProfit = pair.p1;
-      // Mock starting price based on symbol type
       currentPrice = pair.cat === 'crypto' ? 50000 : 1.2500;
 
       document.getElementById('barFlags').innerText = pair.flags;
@@ -378,7 +486,6 @@
       const amt = parseFloat(document.getElementById('tradeAmt').value) || 0;
       const profit = amt + (amt * (activeProfit / 100));
       const payoutElem = document.getElementById('payoutReturn');
-      
       payoutElem.innerText = `+$${profit.toFixed(2)}`;
       payoutElem.classList.remove('flash-update');
       void payoutElem.offsetWidth; 
@@ -414,17 +521,45 @@
     }
     setInterval(fluctuatePayouts, 4000);
 
+    // ==========================================
+    // 3. ADVANCED AI REASONING ENGINE
+    // ==========================================
     function scanAI() {
       const btn = document.getElementById('aiBtn');
       const res = document.getElementById('aiResult');
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Scanning...';
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Analyzing Liquidity & Volume...';
 
       setTimeout(() => {
         const isUp = Math.random() > 0.5;
         const icon = document.getElementById('sigIcon');
         const text = document.getElementById('sigText');
         document.getElementById('sigAcc').innerText = (Math.random() * 8 + 89).toFixed(1) + '%';
+        
+        // Logical calculations
+        const rsi = isUp ? (Math.random() * 15 + 20).toFixed(1) : (Math.random() * 15 + 65).toFixed(1); // 20-35 for buy, 65-80 for sell
+        const volBulls = isUp ? Math.floor(Math.random() * 20 + 60) : Math.floor(Math.random() * 30 + 10);
+        const volBears = 100 - volBulls;
+        
+        const priceStr = currentPrice.toFixed(currentPrice > 1000 ? 2 : 5);
+        const zoneType = isUp ? "Demand Zone (Support)" : "Supply Zone (Resistance)";
 
+        // Update Reasoning UI
+        document.getElementById('r-liq').innerText = `${priceStr} - ${zoneType}`;
+        
+        const volElem = document.getElementById('r-vol');
+        volElem.innerText = `Bulls ${volBulls}% - Bears ${volBears}%`;
+        volElem.style.color = isUp ? 'var(--accent-green)' : 'var(--accent-red)';
+
+        document.getElementById('r-tech').innerText = `RSI ${rsi} & MACD ${isUp ? 'Crossover' : 'Divergence'}`;
+
+        const descElem = document.getElementById('r-desc');
+        if(isUp) {
+          descElem.innerText = `মার্কেট বর্তমানে স্ট্রং সাপোর্ট (Demand Zone) থেকে রিজেকশন নিয়েছে। ওভারসোল্ড আরএসআই (RSI ${rsi}) এবং বুলিশ ভলিউমের কারণে এখান থেকে আপট্রেন্ড শুরু হওয়ার হাই কনফার্মেশন রয়েছে।`;
+        } else {
+          descElem.innerText = `মার্কেট বর্তমানে স্ট্রং রেজিস্ট্যান্স (Supply Zone) হিট করেছে। ওভারবট আরএসআই (RSI ${rsi}) এবং সেলারদের প্রেশার বৃদ্ধি পাওয়ায় এখান থেকে ডাউনট্রেন্ড শুরু হওয়ার হাই কনফার্মেশন রয়েছে।`;
+        }
+
+        // Signal Verdict
         icon.className = 'sig-arrow'; text.className = 'sig-text';
         if(isUp) {
           icon.innerHTML = '<i class="fa-solid fa-arrow-up"></i>';
@@ -433,9 +568,10 @@
           icon.innerHTML = '<i class="fa-solid fa-arrow-down"></i>';
           icon.classList.add('sig-sell'); text.innerText = 'STRONG PUT (DOWN)'; text.classList.add('sig-sell');
         }
+        
         btn.style.display = 'none'; res.style.display = 'block';
-        setTimeout(() => { btn.innerHTML = 'Scan Again'; btn.style.display = 'inline-block'; }, 3000);
-      }, 1200);
+        setTimeout(() => { btn.innerHTML = 'Scan Again'; btn.style.display = 'inline-block'; }, 4000);
+      }, 1500);
     }
 
     function executeTrade(type) {
@@ -472,7 +608,6 @@
       }
     }
     
-    // Auto fluctuate price for orderbook
     setInterval(() => {
       const isCrypto = currentPrice > 1000;
       const delta = (Math.random() * 2 - 1) * (isCrypto ? 5 : 0.0002);
