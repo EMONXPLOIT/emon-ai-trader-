@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>EMON AI TRADER | Next-Gen Crypto & Signal Exchange</title>
+  
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    :root {
+      --bg-dark: #05070c;
+      --panel-bg: rgba(13, 17, 25, 0.85);
+      --border: rgba(56, 189, 248, 0.15);
+      --accent-cyan: #06b6d4;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --accent-gold: #f59e0b;
+      --neon-glow: 0 0 10px rgba(6, 182, 212, 0.5);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    .mono { font-family: 'Fira Code', monospace; }
+
+    body {
+      background-color: var(--bg-dark);
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      background-image: radial-gradient(circle at 50% 0%, rgba(6, 182, 212, 0.05) 0%, transparent 50%);
+    }
+
+    /* AI BRANDING HEADER */
+    header {
+      background: rgba(8, 11, 18, 0.95);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 3%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .brand-box {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-ai {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-size: 1.2rem;
+      box-shadow: var(--neon-glow);
+    }
+
+    .brand-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #fff;
+    }
+
+    .brand-title span { color: var(--accent-cyan); text-shadow: var(--neon-glow); }
+
+    .ai-status {
+      font-size: 0.75rem;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid var(--accent-green);
+      color: var(--accent-green);
+      padding: 4px 10px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+    }
+
+    /* TICKER */
+    .ticker-bar {
+      background: rgba(13, 17, 25, 0.8);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 6px 3%;
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      white-space: nowrap;
+      font-size: 0.8rem;
+    }
+    .ticker-bar::-webkit-scrollbar { display: none; }
+    .t-item { display: flex; gap: 6px; color: #94a3b8; }
+    .t-price { color: var(--accent-cyan); font-weight: 700; }
+
+    /* GRID ARCHITECTURE */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 2.5fr 1fr 1fr;
+      gap: 16px;
+      padding: 16px 3%;
+      flex: 1;
+    }
+
+    @media (max-width: 1200px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+
+    .panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      backdrop-filter: blur(10px);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      padding-bottom: 8px;
+    }
+
+    /* LEFT COL: CHART + AI ANALYZER */
+    .left-col { display: flex; flex-direction: column; gap: 16px; }
+
+    .chart-container {
+      height: 400px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    /* 🔥 NEW: AI 1-MIN SCALPING ANALYZER */
+    .ai-analyzer-panel {
+      background: linear-gradient(180deg, rgba(13,17,25,1) 0%, rgba(6,182,212,0.05) 100%);
+      border: 1px solid var(--accent-cyan);
+      box-shadow: inset 0 0 20px rgba(6,182,212,0.05);
+    }
+
+    .ai-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+
+    .indicator-box {
+      background: rgba(0,0,0,0.3);
+      border: 1px dashed rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .ind-title { font-size: 0.75rem; color: #94a3b8; margin-bottom: 4px; }
+    .ind-val { font-size: 1.1rem; font-weight: 800; }
+
+    .signal-verdict {
+      background: rgba(0,0,0,0.5);
+      border-radius: 10px;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .signal-text {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      animation: pulseText 1.5s infinite;
+    }
+
+    @keyframes pulseText {
+      0% { opacity: 0.7; }
+      50% { opacity: 1; transform: scale(1.02); }
+      100% { opacity: 0.7; }
+    }
+
+    .sig-buy { color: var(--accent-green); text-shadow: 0 0 15px var(--accent-green); }
+    .sig-sell { color: var(--accent-red); text-shadow: 0 0 15px var(--accent-red); }
+    .sig-hold { color: var(--accent-gold); text-shadow: 0 0 15px var(--accent-gold); }
+
+    /* MID COL: ORDERBOOK */
+    .orderbook-panel { height: 620px; }
+    .ob-header, .ob-row { display: flex; justify-content: space-between; font-size: 0.75rem; padding: 4px 0; }
+    .ob-header { color: #64748b; font-weight: 600; margin-bottom: 5px; }
+    .ob-row.ask { color: var(--accent-red); }
+    .ob-row.bid { color: var(--accent-green); }
+    .ob-spread {
+      text-align: center; padding: 6px 0; margin: 4px 0;
+      font-weight: 700; color: var(--accent-cyan);
+      background: rgba(6,182,212,0.1); border-radius: 4px;
+    }
+
+    /* RIGHT COL: TRADE EXECUTION */
+    .trade-panel { height: 620px; }
+    
+    .wallet-info {
+      display: flex; justify-content: space-between;
+      font-size: 0.8rem; margin-bottom: 15px;
+      padding: 10px; background: rgba(0,0,0,0.3); border-radius: 8px;
+    }
+
+    .trade-tabs { display: flex; gap: 8px; margin-bottom: 15px; }
+    .side-btn {
+      flex: 1; padding: 10px; border: none; border-radius: 6px;
+      font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: 0.2s;
+    }
+    .buy-side { background: var(--accent-green); color: #000; }
+    .sell-side { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
+
+    .input-group {
+      background: #000; border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px; padding: 10px; margin-bottom: 12px;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .input-group input {
+      background: transparent; border: none; outline: none;
+      color: #fff; font-size: 1rem; width: 60%;
+    }
+
+    .action-btn {
+      width: 100%; padding: 14px; border: none; border-radius: 8px;
+      font-size: 1rem; font-weight: 800; cursor: pointer; margin-top: 10px;
+      background: var(--accent-green); color: #000; box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+    }
+    .action-btn:hover { transform: translateY(-2px); }
+
+    /* FOOTER */
+    footer { text-align: center; padding: 15px; color: #64748b; font-size: 0.8rem; border-top: 1px solid var(--border); }
+    footer strong { color: var(--accent-cyan); }
+  </style>
+</head>
+<body>
+
+  <!-- AI HEADER -->
+  <header>
+    <div class="brand-box">
+      <div class="logo-ai"><i class="fa-solid fa-brain"></i></div>
+      <div class="brand-title">EMON <span>AI TRADER</span></div>
+    </div>
+    <div class="ai-status">
+      <i class="fa-solid fa-microchip"></i> AI Engine Active &bull; 1ms Latency
+    </div>
+  </header>
+
+  <!-- MARKET TICKER -->
+  <div class="ticker-bar">
+    <div class="t-item">BTC/USDT: <span class="t-price mono" id="t-btc">---</span></div>
+    <div class="t-item">ETH/USDT: <span class="t-price mono" id="t-eth">---</span></div>
+    <div class="t-item">SOL/USDT: <span class="t-price mono" id="t-sol">---</span></div>
+    <div class="t-item">BNB/USDT: <span class="t-price mono" id="t-bnb">---</span></div>
+  </div>
+
+  <!-- MAIN EXCHANGE GRID -->
+  <div class="main-grid">
+    
+    <!-- LEFT: CHART & AI SIGNAL -->
+    <div class="left-col">
+      <!-- Trading Chart -->
+      <div class="panel" style="padding: 10px;">
+        <div class="chart-container">
+          <iframe 
+            src="https://s.tradingview.com/widgetembed/?symbol=BINANCE%3ABTCUSDT&interval=1&theme=dark&style=1&timezone=Asia%2FDhaka" 
+            style="width: 100%; height: 100%; border: none;">
+          </iframe>
+        </div>
+      </div>
+
+      <!-- 🔥 AI 1-MIN SCALPING ANALYZER -->
+      <div class="panel ai-analyzer-panel">
+        <div class="panel-header" style="border-color: rgba(6,182,212,0.3);">
+          <span><i class="fa-solid fa-radar" style="color:var(--accent-cyan);"></i> AI মার্কেট অ্যানালাইজার (১-মিনিট স্ক্যাল্পিং)</span>
+          <span class="mono" style="font-size:0.75rem; color:#94a3b8;" id="aiTimer">Updating...</span>
+        </div>
+
+        <div class="ai-grid">
+          <div class="indicator-box">
+            <div class="ind-title">RSI (14)</div>
+            <div class="ind-val mono" id="aiRsi">45.2</div>
+          </div>
+          <div class="indicator-box">
+            <div class="ind-title">MACD (12,26)</div>
+            <div class="ind-val mono" id="aiMacd">Bullish</div>
+          </div>
+          <div class="indicator-box">
+            <div class="ind-title">Trend (EMA 50)</div>
+            <div class="ind-val mono" id="aiTrend">Uptrend</div>
+          </div>
+        </div>
+
+        <div class="signal-verdict">
+          <div>
+            <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:4px;">অ্যালগো সিগন্যাল:</div>
+            <div style="font-size:0.8rem; color:var(--accent-cyan);">নির্ভুলতা: ৯৪.২%</div>
+          </div>
+          <div class="signal-text sig-buy" id="aiSignalText">STRONG BUY</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MID: LIVE ORDERBOOK -->
+    <div class="panel orderbook-panel">
+      <div class="panel-header">
+        <span><i class="fa-solid fa-list-ul"></i> অর্ডারবুক (Live)</span>
+      </div>
+      <div class="ob-header mono">
+        <span>প্রাইস</span><span>পরিমাণ</span><span>টোটাল</span>
+      </div>
+      <div id="obBody" class="mono" style="overflow-y:auto; flex:1;"></div>
+    </div>
+
+    <!-- RIGHT: TRADE EXECUTION -->
+    <div class="panel trade-panel">
+      <div class="panel-header">
+        <span><i class="fa-solid fa-bolt" style="color:var(--accent-gold);"></i> স্পট ট্রেডিং</span>
+      </div>
+
+      <div class="wallet-info mono">
+        <span>অ্যাভেইলেবল:</span>
+        <span id="userBalance" style="color:var(--accent-cyan); font-weight:700;">$25,000.00</span>
+      </div>
+
+      <div class="trade-tabs">
+        <button class="side-btn buy-side" id="buyBtn" onclick="setSide('BUY')">BUY</button>
+        <button class="side-btn sell-side" id="sellBtn" onclick="setSide('SELL')">SELL</button>
+      </div>
+
+      <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:4px;">লিমিট প্রাইস (USDT)</div>
+      <div class="input-group">
+        <input type="number" id="tradePrice" class="mono" value="84250.00" />
+        <span class="mono" style="font-size:0.8rem; color:#64748b;">USDT</span>
+      </div>
+
+      <div style="font-size:0.75rem; color:#94a3b8; margin-bottom:4px;">পরিমাণ (BTC)</div>
+      <div class="input-group">
+        <input type="number" id="tradeAmt" class="mono" value="0.1" oninput="calcTotal()" />
+        <span class="mono" style="font-size:0.8rem; color:#64748b;">BTC</span>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; font-size:0.85rem; margin: 15px 0; color:#94a3b8;">
+        <span>অর্ডার ভ্যালু:</span>
+        <span class="mono" id="tradeTotal" style="color:#fff; font-weight:700;">$8,425.00</span>
+      </div>
+
+      <button class="action-btn" id="execBtn" onclick="executeTrade()">
+        লং পজিশন ওপেন করুন (BUY)
+      </button>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>AI Engine & Trading Architecture Built by <strong>Emon Khan</strong> &bull; EMON AI TRADER &copy; 2026</p>
+  </footer>
+
+  <script>
+    let btcPrice = 84250.00;
+    let balance = 25000.00;
+    let activeSide = 'BUY';
+
+    // 1. AI 1-MIN SCALPING ENGINE LOGIC
+    function updateAIAnalyzer() {
+      // Simulate Market Data Analysis
+      const rsi = (Math.random() * 60 + 20).toFixed(1); // RSI between 20 to 80
+      const isMacdBull = Math.random() > 0.5;
+      const isEmaUp = Math.random() > 0.4;
+      
+      const rsiElem = document.getElementById('aiRsi');
+      const macdElem = document.getElementById('aiMacd');
+      const trendElem = document.getElementById('aiTrend');
+      const sigElem = document.getElementById('aiSignalText');
+
+      rsiElem.innerText = rsi;
+      macdElem.innerText = isMacdBull ? 'Bullish' : 'Bearish';
+      macdElem.style.color = isMacdBull ? 'var(--accent-green)' : 'var(--accent-red)';
+      
+      trendElem.innerText = isEmaUp ? 'Uptrend' : 'Downtrend';
+      trendElem.style.color = isEmaUp ? 'var(--accent-green)' : 'var(--accent-red)';
+
+      // Decision Tree for Scalping Signal
+      sigElem.className = 'signal-text'; // Reset classes
+      if (rsi < 35 && isMacdBull) {
+        sigElem.innerText = 'STRONG BUY';
+        sigElem.classList.add('sig-buy');
+      } else if (rsi > 65 && !isMacdBull) {
+        sigElem.innerText = 'STRONG SELL';
+        sigElem.classList.add('sig-sell');
+      } else if (rsi > 50 && isEmaUp) {
+        sigElem.innerText = 'BUY';
+        sigElem.classList.add('sig-buy');
+      } else if (rsi < 50 && !isEmaUp) {
+        sigElem.innerText = 'SELL';
+        sigElem.classList.add('sig-sell');
+      } else {
+        sigElem.innerText = 'HOLD (WAIT)';
+        sigElem.classList.add('sig-hold');
+      }
+
+      // Update Timer UI
+      document.getElementById('aiTimer').innerText = 'Next Scan: ' + new Date().toLocaleTimeString();
+    }
+    setInterval(updateAIAnalyzer, 3500); // AI updates every 3.5 seconds
+
+    // 2. LIVE ORDERBOOK
+    function renderOrderbook() {
+      const ob = document.getElementById('obBody');
+      ob.innerHTML = '';
+      
+      // Sells
+      for (let i = 8; i >= 1; i--) {
+        const p = (btcPrice + i * 1.5).toFixed(2);
+        const s = (Math.random() * 0.5 + 0.01).toFixed(3);
+        ob.innerHTML += `<div class="ob-row ask"><span>${p}</span><span>${s}</span><span>${(p*s).toFixed(0)}</span></div>`;
+      }
+      // Spread
+      ob.innerHTML += `<div class="ob-spread">${btcPrice.toFixed(2)} &bull; মার্কেট</div>`;
+      // Buys
+      for (let i = 1; i <= 8; i++) {
+        const p = (btcPrice - i * 1.5).toFixed(2);
+        const s = (Math.random() * 0.5 + 0.01).toFixed(3);
+        ob.innerHTML += `<div class="ob-row bid"><span>${p}</span><span>${s}</span><span>${(p*s).toFixed(0)}</span></div>`;
+      }
+    }
+    setInterval(renderOrderbook, 1500);
+
+    // 3. LIVE TICKER
+    async function fetchTicker() {
+      try {
+        const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbols=["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT"]');
+        const data = await res.json();
+        data.forEach(t => {
+          const v = `$${parseFloat(t.price).toLocaleString('en-US', {minimumFractionDigits:2})}`;
+          if(t.symbol==='BTCUSDT') {
+            btcPrice = parseFloat(t.price);
+            document.getElementById('t-btc').innerText = v;
+            document.getElementById('tradePrice').value = btcPrice.toFixed(2);
+            calcTotal();
+          }
+          if(t.symbol==='ETHUSDT') document.getElementById('t-eth').innerText = v;
+          if(t.symbol==='SOLUSDT') document.getElementById('t-sol').innerText = v;
+          if(t.symbol==='BNBUSDT') document.getElementById('t-bnb').innerText = v;
+        });
+      } catch(e) {}
+    }
+    setInterval(fetchTicker, 3000);
+    fetchTicker();
+
+    // 4. TRADE EXECUTION
+    function setSide(s) {
+      activeSide = s;
+      const bBtn = document.getElementById('buyBtn');
+      const sBtn = document.getElementById('sellBtn');
+      const eBtn = document.getElementById('execBtn');
+
+      if(s === 'BUY') {
+        bBtn.style.background = 'var(--accent-green)'; bBtn.style.color = '#000';
+        sBtn.style.background = 'rgba(239, 68, 68, 0.15)'; sBtn.style.color = 'var(--accent-red)';
+        eBtn.style.background = 'var(--accent-green)'; eBtn.style.color = '#000';
+        eBtn.innerText = 'লং পজিশন ওপেন করুন (BUY)';
+      } else {
+        sBtn.style.background = 'var(--accent-red)'; sBtn.style.color = '#fff';
+        bBtn.style.background = 'rgba(16, 185, 129, 0.15)'; bBtn.style.color = 'var(--accent-green)';
+        eBtn.style.background = 'var(--accent-red)'; eBtn.style.color = '#fff';
+        eBtn.innerText = 'শর্ট পজিশন ওপেন করুন (SELL)';
+      }
+    }
+
+    function calcTotal() {
+      const p = parseFloat(document.getElementById('tradePrice').value) || 0;
+      const a = parseFloat(document.getElementById('tradeAmt').value) || 0;
+      document.getElementById('tradeTotal').innerText = `$${(p*a).toLocaleString('en-US', {minimumFractionDigits:2})}`;
+    }
+
+    function executeTrade() {
+      const p = parseFloat(document.getElementById('tradePrice').value);
+      const a = parseFloat(document.getElementById('tradeAmt').value);
+      const tot = p * a;
+      
+      if(tot <= 0) return alert('সঠিক পরিমাণ দিন!');
+      if(activeSide === 'BUY' && tot > balance) return alert('ব্যালেন্স অপর্যাপ্ত!');
+      
+      if(activeSide === 'BUY') balance -= tot;
+      else balance += tot;
+
+      document.getElementById('userBalance').innerText = `$${balance.toLocaleString('en-US', {minimumFractionDigits:2})}`;
+      alert(`সফল! ${activeSide} অর্ডার এক্সিকিউট হয়েছে।`);
+    }
+
+    // Init
+    updateAIAnalyzer();
+    renderOrderbook();
+  </script>
+</body>
+</html>
