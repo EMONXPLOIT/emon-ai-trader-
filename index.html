@@ -9,15 +9,72 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
   <style>
-    /* Binance Style Color Palette */
+    /* =========================================
+       INTRO TV BOOT ANIMATION STYLES
+       ========================================= */
+    #bootScreen {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 99999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .terminal-boot-text {
+      width: 90%;
+      max-width: 700px;
+      color: #0f0;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      text-shadow: 0 0 5px #0f0;
+    }
+
+    .tv-flash-effect {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff;
+      width: 0;
+      height: 2px;
+      box-shadow: 0 0 20px #fff;
+      opacity: 0;
+      z-index: 100000;
+    }
+
+    .tv-flash-effect.active {
+      animation: tvTurnOn 0.85s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    }
+
+    @keyframes tvTurnOn {
+      0% { opacity: 1; width: 0; height: 2px; }
+      40% { opacity: 1; width: 100vw; height: 2px; }
+      100% { opacity: 1; width: 100vw; height: 100vh; }
+    }
+
+    /* Main Website Body */
+    #mainApp {
+      display: none; /* Hidden until boot is done */
+      opacity: 0;
+      transition: opacity 0.5s ease-in;
+    }
+
+    /* =========================================
+       BINANCE STYLE EXCHANGE STYLES
+       ========================================= */
     :root {
-      --bg-dark: #0B0E11;        /* Main Background */
-      --panel-bg: #181A20;       /* Card Background */
-      --border: #2B3139;         /* Borders */
-      --accent-yellow: #FCD535;  /* Binance Yellow */
+      --bg-dark: #0B0E11;        
+      --panel-bg: #181A20;       
+      --border: #2B3139;         
+      --accent-yellow: #FCD535;  
       --accent-yellow-hover: #F0B90B;
-      --accent-green: #0ECB81;   /* Buy/Up Green */
-      --accent-red: #F6465D;     /* Sell/Down Red */
+      --accent-green: #0ECB81;   
+      --accent-red: #F6465D;     
       --text-main: #EAECEF;
       --text-muted: #848E9C;
     }
@@ -33,7 +90,6 @@
       flex-direction: column;
     }
 
-    /* HEADER */
     header {
       background: #181A20;
       border-bottom: 1px solid var(--border);
@@ -60,7 +116,6 @@
     }
     .top-balance span { color: var(--accent-yellow); font-size: 1.1rem; }
 
-    /* TICKER */
     .ticker-bar {
       background: var(--bg-dark); border-bottom: 1px solid var(--border);
       padding: 8px 2%; display: flex; gap: 20px; font-size: 0.8rem; font-weight: 500;
@@ -69,7 +124,6 @@
     .t-price.up { color: var(--accent-green); }
     .t-price.down { color: var(--accent-red); }
 
-    /* LAYOUT */
     .dashboard {
       display: grid;
       grid-template-columns: 280px 1fr 320px;
@@ -94,7 +148,6 @@
       margin-bottom: 12px; display: flex; justify-content: space-between;
     }
 
-    /* LEFT COL: MARKETS */
     .market-list { overflow-y: auto; flex: 1; max-height: 800px; }
     .m-item {
       display: flex; justify-content: space-between; align-items: center;
@@ -108,7 +161,6 @@
     .c-up { color: var(--accent-green); }
     .c-down { color: var(--accent-red); }
 
-    /* MID COL: CHART & AI */
     .chart-box { height: 450px; margin-bottom: 5px; }
     
     .ai-box {
@@ -128,7 +180,6 @@
     .sig-buy { color: var(--accent-green); }
     .sig-sell { color: var(--accent-red); }
 
-    /* RIGHT COL: TRADE & BALANCE */
     .deposit-box {
       background: #1E2329; border: 1px dashed var(--accent-yellow);
       border-radius: 4px; padding: 12px; margin-bottom: 15px;
@@ -145,7 +196,6 @@
     }
     .d-input-grp button:hover { background: #3b424a; }
 
-    /* Orderbook & Trade */
     .ob-row { display: flex; justify-content: space-between; font-size: 0.75rem; padding: 3px 0; }
     .ob-price.ask { color: var(--accent-red); }
     .ob-price.bid { color: var(--accent-green); }
@@ -178,195 +228,231 @@
 </head>
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <div class="brand">
-      <div class="logo-badge"><i class="fa-solid fa-chart-line"></i></div>
-      <div class="brand-title">EMON <span>TRADER</span></div>
-    </div>
-    <div class="header-right">
-      <div class="top-balance">
-        Available Balance: <span class="mono" id="topBal">$10,000.00</span>
-      </div>
-    </div>
-  </header>
-
-  <!-- TICKER -->
-  <div class="ticker-bar mono">
-    <div class="t-item">BTC/USDT <span class="t-price up">84,250.00</span></div>
-    <div class="t-item">ETH/USDT <span class="t-price down">2,660.50</span></div>
-    <div class="t-item">SOL/USDT <span class="t-price up">114.50</span></div>
-    <div class="t-item">EUR/USD <span class="t-price up">1.0845</span></div>
+  <!-- ================= BOOT SCREEN (TV / TERMINAL EFFECT) ================= -->
+  <div id="bootScreen">
+    <div class="terminal-boot-text" id="bootText"></div>
+    <div class="tv-flash-effect" id="tvFlash"></div>
   </div>
 
-  <div class="dashboard">
+  <!-- ================= MAIN WEBSITE CONTENT ================= -->
+  <div id="mainApp">
     
-    <!-- LEFT: MARKETS -->
-    <div class="panel">
-      <div class="panel-title">
-        <span>Markets</span>
-        <i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted);"></i>
+    <header>
+      <div class="brand">
+        <div class="logo-badge"><i class="fa-solid fa-chart-line"></i></div>
+        <div class="brand-title">EMON <span>TRADER</span></div>
       </div>
-      <div class="market-list">
-        <!-- Crypto -->
-        <div style="font-size:0.75rem; color:var(--text-muted); margin: 10px 0 5px;">USDT Pairs</div>
-        <div class="m-item active" onclick="loadMarket('BINANCE:BTCUSDT', 'BTC/USDT', 84250, this)">
-          <div><div class="m-name mono">BTC/USDT</div><div class="m-vol mono">Vol 42.1K</div></div>
-          <div><div class="m-price c-up mono">84,250.00</div><div class="m-change c-up mono">+2.4%</div></div>
+      <div class="header-right">
+        <div class="top-balance">
+          Available Balance: <span class="mono" id="topBal">$10,000.00</span>
         </div>
-        <div class="m-item" onclick="loadMarket('BINANCE:ETHUSDT', 'ETH/USDT', 2660.5, this)">
-          <div><div class="m-name mono">ETH/USDT</div><div class="m-vol mono">Vol 112K</div></div>
-          <div><div class="m-price c-down mono">2,660.50</div><div class="m-change c-down mono">-1.2%</div></div>
-        </div>
-        <div class="m-item" onclick="loadMarket('BINANCE:SOLUSDT', 'SOL/USDT', 114.5, this)">
-          <div><div class="m-name mono">SOL/USDT</div><div class="m-vol mono">Vol 8.5M</div></div>
-          <div><div class="m-price c-up mono">114.50</div><div class="m-change c-up mono">+5.8%</div></div>
-        </div>
+      </div>
+    </header>
 
-        <!-- Forex -->
-        <div style="font-size:0.75rem; color:var(--text-muted); margin: 15px 0 5px;">Forex Pairs</div>
-        <div class="m-item" onclick="loadMarket('FX:EURUSD', 'EUR/USD', 1.0845, this)">
-          <div><div class="m-name mono">EUR/USD</div><div class="m-vol mono">Forex</div></div>
-          <div><div class="m-price c-up mono">1.0845</div><div class="m-change c-up mono">+0.15%</div></div>
-        </div>
-        <div class="m-item" onclick="loadMarket('FX:GBPUSD', 'GBP/USD', 1.2630, this)">
-          <div><div class="m-name mono">GBP/USD</div><div class="m-vol mono">Forex</div></div>
-          <div><div class="m-price c-down mono">1.2630</div><div class="m-change c-down mono">-0.05%</div></div>
-        </div>
-      </div>
+    <div class="ticker-bar mono">
+      <div class="t-item">BTC/USDT <span class="t-price up">84,250.00</span></div>
+      <div class="t-item">ETH/USDT <span class="t-price down">2,660.50</span></div>
+      <div class="t-item">SOL/USDT <span class="t-price up">114.50</span></div>
+      <div class="t-item">EUR/USD <span class="t-price up">1.0845</span></div>
     </div>
 
-    <!-- MID: CHART & AI -->
-    <div style="display: flex; flex-direction: column; gap: 5px;">
-      <!-- Chart -->
-      <div class="panel" style="padding: 0;">
-        <div class="chart-box">
-          <iframe id="tvChart" src="https://s.tradingview.com/widgetembed/?symbol=BINANCE%3ABTCUSDT&interval=1&theme=dark&style=1&timezone=Asia%2FDhaka&toolbarbg=181A20" style="width:100%; height:100%; border:none;"></iframe>
+    <div class="dashboard">
+      
+      <!-- LEFT: MARKETS -->
+      <div class="panel">
+        <div class="panel-title">
+          <span>Markets</span>
+          <i class="fa-solid fa-magnifying-glass" style="color:var(--text-muted);"></i>
+        </div>
+        <div class="market-list">
+          <div style="font-size:0.75rem; color:var(--text-muted); margin: 10px 0 5px;">USDT Pairs</div>
+          <div class="m-item active" onclick="loadMarket('BINANCE:BTCUSDT', 'BTC/USDT', 84250, this)">
+            <div><div class="m-name mono">BTC/USDT</div><div class="m-vol mono">Vol 42.1K</div></div>
+            <div><div class="m-price c-up mono">84,250.00</div><div class="m-change c-up mono">+2.4%</div></div>
+          </div>
+          <div class="m-item" onclick="loadMarket('BINANCE:ETHUSDT', 'ETH/USDT', 2660.5, this)">
+            <div><div class="m-name mono">ETH/USDT</div><div class="m-vol mono">Vol 112K</div></div>
+            <div><div class="m-price c-down mono">2,660.50</div><div class="m-change c-down mono">-1.2%</div></div>
+          </div>
+          <div class="m-item" onclick="loadMarket('BINANCE:SOLUSDT', 'SOL/USDT', 114.5, this)">
+            <div><div class="m-name mono">SOL/USDT</div><div class="m-vol mono">Vol 8.5M</div></div>
+            <div><div class="m-price c-up mono">114.50</div><div class="m-change c-up mono">+5.8%</div></div>
+          </div>
+
+          <div style="font-size:0.75rem; color:var(--text-muted); margin: 15px 0 5px;">Forex Pairs</div>
+          <div class="m-item" onclick="loadMarket('FX:EURUSD', 'EUR/USD', 1.0845, this)">
+            <div><div class="m-name mono">EUR/USD</div><div class="m-vol mono">Forex</div></div>
+            <div><div class="m-price c-up mono">1.0845</div><div class="m-change c-up mono">+0.15%</div></div>
+          </div>
+          <div class="m-item" onclick="loadMarket('FX:GBPUSD', 'GBP/USD', 1.2630, this)">
+            <div><div class="m-name mono">GBP/USD</div><div class="m-vol mono">Forex</div></div>
+            <div><div class="m-price c-down mono">1.2630</div><div class="m-change c-down mono">-0.05%</div></div>
+          </div>
         </div>
       </div>
-      
-      <!-- AI Scanner -->
-      <div class="panel ai-box">
-        <div style="margin-bottom: 10px; font-weight: 600;"><i class="fa-solid fa-radar"></i> AI 1-Min Scalping Analyzer</div>
-        <button class="ai-btn" id="aiBtn" onclick="scanAI()"><span id="aiPairTxt">BTC/USDT</span> স্ক্যান করুন</button>
+
+      <!-- MID: CHART & AI -->
+      <div style="display: flex; flex-direction: column; gap: 5px;">
+        <div class="panel" style="padding: 0;">
+          <div class="chart-box">
+            <iframe id="tvChart" src="https://s.tradingview.com/widgetembed/?symbol=BINANCE%3ABTCUSDT&interval=1&theme=dark&style=1&timezone=Asia%2FDhaka&toolbarbg=181A20" style="width:100%; height:100%; border:none;"></iframe>
+          </div>
+        </div>
         
-        <div class="sig-result" id="aiResult">
-          <div class="sig-layout">
-            <div class="sig-arrow sig-buy" id="sigIcon"><i class="fa-solid fa-arrow-up"></i></div>
-            <div style="text-align:left;">
-              <div class="sig-text sig-buy" id="sigText">STRONG BUY</div>
-              <div class="mono" style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">Accuracy: <span style="color:var(--accent-yellow);" id="sigAcc">95.4%</span></div>
+        <div class="panel ai-box">
+          <div style="margin-bottom: 10px; font-weight: 600;"><i class="fa-solid fa-radar"></i> AI 1-Min Scalping Analyzer</div>
+          <button class="ai-btn" id="aiBtn" onclick="scanAI()"><span id="aiPairTxt">BTC/USDT</span> স্ক্যান করুন</button>
+          
+          <div class="sig-result" id="aiResult">
+            <div class="sig-layout">
+              <div class="sig-arrow sig-buy" id="sigIcon"><i class="fa-solid fa-arrow-up"></i></div>
+              <div style="text-align:left;">
+                <div class="sig-text sig-buy" id="sigText">STRONG BUY</div>
+                <div class="mono" style="font-size:0.8rem; color:var(--text-muted); margin-top:4px;">Accuracy: <span style="color:var(--accent-yellow);" id="sigAcc">95.4%</span></div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- RIGHT: TRADE & DEPOSIT -->
-    <div class="panel">
-      <!-- DEPOSIT SYSTEM (CUSTOM BALANCE) -->
-      <div class="deposit-box">
-        <h4><i class="fa-solid fa-coins"></i> Deposit / ব্যালেন্স এড করুন</h4>
-        <div class="d-input-grp">
-          <input type="number" id="depAmount" class="mono" placeholder="Enter amount (USD)" />
-          <button onclick="addBalance()">Add</button>
+      <!-- RIGHT: TRADE & DEPOSIT -->
+      <div class="panel">
+        <div class="deposit-box">
+          <h4><i class="fa-solid fa-coins"></i> Deposit / ব্যালেন্স এড করুন</h4>
+          <div class="d-input-grp">
+            <input type="number" id="depAmount" class="mono" placeholder="Enter amount (USD)" />
+            <button onclick="addBalance()">Add</button>
+          </div>
+          <div style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">
+            Available: <span class="mono" id="sideBal" style="color:#fff;">$10,000.00</span>
+          </div>
         </div>
-        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:8px;">
-          Available: <span class="mono" id="sideBal" style="color:#fff;">$10,000.00</span>
+
+        <div class="panel-title" style="margin-top:5px; margin-bottom:5px;">Order Book</div>
+        <div id="obBox" style="margin-bottom:10px;"></div>
+
+        <div class="trade-tabs">
+          <div class="t-tab buy active" id="tabBuy" onclick="setSide('BUY')">Buy</div>
+          <div class="t-tab sell" id="tabSell" onclick="setSide('SELL')">Sell</div>
         </div>
-      </div>
 
-      <!-- ORDERBOOK (Mini) -->
-      <div class="panel-title" style="margin-top:5px; margin-bottom:5px;">Order Book</div>
-      <div id="obBox" style="margin-bottom:10px;">
-        <!-- Filled by JS -->
-      </div>
+        <div class="t-input">
+          <input type="number" id="tradePrice" class="mono" value="84250.00" />
+          <span>Price (USDT)</span>
+        </div>
+        <div class="t-input">
+          <input type="number" id="tradeAmt" class="mono" placeholder="Amount" value="0.1" oninput="calcVal()" />
+          <span id="tradeCoin">BTC</span>
+        </div>
+        
+        <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin:10px 0;">
+          <span style="color:var(--text-muted);">Total Value:</span>
+          <span class="mono" id="tradeVal" style="color:#fff; font-weight:600;">$8,425.00</span>
+        </div>
 
-      <!-- TRADE ENTRY -->
-      <div class="trade-tabs">
-        <div class="t-tab buy active" id="tabBuy" onclick="setSide('BUY')">Buy</div>
-        <div class="t-tab sell" id="tabSell" onclick="setSide('SELL')">Sell</div>
+        <button class="t-btn buy" id="btnBuy" onclick="executeTrade('BUY')">Buy <span id="btnCoinBuy">BTC</span></button>
+        <button class="t-btn sell" id="btnSell" onclick="executeTrade('SELL')">Sell <span id="btnCoinSell">BTC</span></button>
       </div>
-
-      <div class="t-input">
-        <input type="number" id="tradePrice" class="mono" value="84250.00" />
-        <span>Price (USDT)</span>
-      </div>
-      <div class="t-input">
-        <input type="number" id="tradeAmt" class="mono" placeholder="Amount" value="0.1" oninput="calcVal()" />
-        <span id="tradeCoin">BTC</span>
-      </div>
-      
-      <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin:10px 0;">
-        <span style="color:var(--text-muted);">Total Value:</span>
-        <span class="mono" id="tradeVal" style="color:#fff; font-weight:600;">$8,425.00</span>
-      </div>
-
-      <button class="t-btn buy" id="btnBuy" onclick="executeTrade('BUY')">Buy <span id="btnCoinBuy">BTC</span></button>
-      <button class="t-btn sell" id="btnSell" onclick="executeTrade('SELL')">Sell <span id="btnCoinSell">BTC</span></button>
 
     </div>
-
   </div>
 
   <script>
-    // Global Variables
+    // ==========================================
+    // 1. BOOT SEQUENCE LOGIC (Terminal & TV Flash)
+    // ==========================================
+    const bootLines = [
+      "[INFO] SYSTEM KERNEL INITIATING...",
+      "[INFO] ESTABLISHING SECURE PROTOCOL...",
+      "[WARN] BYPASSING FIREWALL [██████████] 100%",
+      "[INFO] CONNECTING TO GLOBAL MARKETS (BINANCE, FOREX)...",
+      "[INFO] SYNCING LIVE ORDERBOOK DATA...",
+      "[INFO] EMON OS LOADED SUCCESSFULLY.",
+      ">> ACCESS GRANTED. STARTING EXCHANGE..."
+    ];
+    
+    const bootTextElem = document.getElementById('bootText');
+    const tvFlash = document.getElementById('tvFlash');
+    const bootScreen = document.getElementById('bootScreen');
+    const mainApp = document.getElementById('mainApp');
+    
+    let lineIndex = 0;
+
+    function typeBootSequence() {
+      if(lineIndex < bootLines.length) {
+        bootTextElem.innerHTML += bootLines[lineIndex] + "<br>";
+        lineIndex++;
+        setTimeout(typeBootSequence, 300); // Speed of lines appearing
+      } else {
+        // Trigger TV Flash Effect
+        setTimeout(() => {
+          tvFlash.classList.add('active');
+          
+          // Switch to main app during flash
+          setTimeout(() => {
+            bootScreen.style.display = 'none';
+            mainApp.style.display = 'block';
+            
+            // Fade in main app smoothly
+            setTimeout(() => {
+              mainApp.style.opacity = '1';
+            }, 50);
+          }, 400); // halfway through the flash animation
+
+        }, 500); // delay before flash starts
+      }
+    }
+
+    // Start Boot Sequence on Load
+    window.onload = () => {
+      typeBootSequence();
+    };
+
+
+    // ==========================================
+    // 2. EXCHANGE LOGIC (Balance, Trade, AI)
+    // ==========================================
     let currentBalance = 10000.00;
     let activePair = 'BTC/USDT';
     let currentPrice = 84250.00;
     let activeSide = 'BUY';
 
-    // Update Balance UI
     function updateBalanceUI() {
       const balStr = `$${currentBalance.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}`;
       document.getElementById('topBal').innerText = balStr;
       document.getElementById('sideBal').innerText = balStr;
     }
 
-    // Add Custom Balance
     function addBalance() {
-      const amtInput = document.getElementById('depAmount');
-      const amt = parseFloat(amtInput.value);
-      
-      if(isNaN(amt) || amt <= 0) {
-        alert("দয়া করে সঠিক এমাউন্ট লিখুন!");
-        return;
-      }
-      
+      const amt = parseFloat(document.getElementById('depAmount').value);
+      if(isNaN(amt) || amt <= 0) return alert("দয়া করে সঠিক এমাউন্ট লিখুন!");
       currentBalance += amt;
       updateBalanceUI();
-      amtInput.value = '';
+      document.getElementById('depAmount').value = '';
       alert(`সফলভাবে $${amt} আপনার অ্যাকাউন্টে অ্যাড করা হয়েছে!`);
     }
 
-    // Switch Market
     function loadMarket(tvSymbol, pairName, price, elem) {
       document.getElementById('tvChart').src = `https://s.tradingview.com/widgetembed/?symbol=${tvSymbol}&interval=1&theme=dark&style=1&toolbarbg=181A20`;
       
-      activePair = pairName;
-      currentPrice = price;
+      activePair = pairName; currentPrice = price;
       const coin = pairName.split('/')[0];
       
-      // Update Texts
       document.getElementById('aiPairTxt').innerText = pairName;
       document.getElementById('tradeCoin').innerText = coin;
       document.getElementById('btnCoinBuy').innerText = coin;
       document.getElementById('btnCoinSell').innerText = coin;
       document.getElementById('tradePrice').value = price;
       
-      // Reset AI
       document.getElementById('aiResult').style.display = 'none';
       document.getElementById('aiBtn').style.display = 'inline-block';
 
-      // Active Class
       document.querySelectorAll('.m-item').forEach(el => el.classList.remove('active'));
       elem.classList.add('active');
 
-      calcVal();
-      renderOB();
+      calcVal(); renderOB();
     }
 
-    // AI Scanner
     function scanAI() {
       const btn = document.getElementById('aiBtn');
       const res = document.getElementById('aiResult');
@@ -378,8 +464,7 @@
         const text = document.getElementById('sigText');
         document.getElementById('sigAcc').innerText = (Math.random() * 10 + 85).toFixed(1) + '%';
         
-        icon.className = 'sig-arrow';
-        text.className = 'sig-text';
+        icon.className = 'sig-arrow'; text.className = 'sig-text';
         
         if(isUp) {
           icon.innerHTML = '<i class="fa-solid fa-arrow-up"></i>';
@@ -393,17 +478,14 @@
           text.classList.add('sig-sell');
         }
         
-        btn.style.display = 'none';
-        res.style.display = 'block';
+        btn.style.display = 'none'; res.style.display = 'block';
         
         setTimeout(() => {
-          btn.innerHTML = 'Scan Again';
-          btn.style.display = 'inline-block';
+          btn.innerHTML = 'Scan Again'; btn.style.display = 'inline-block';
         }, 3000);
       }, 1500);
     }
 
-    // Trade Logic
     function setSide(side) {
       activeSide = side;
       const tBuy = document.getElementById('tabBuy');
@@ -412,15 +494,11 @@
       const bSell = document.getElementById('btnSell');
 
       if(side === 'BUY') {
-        tBuy.classList.add('active');
-        tSell.classList.remove('active');
-        bBuy.style.display = 'block';
-        bSell.style.display = 'none';
+        tBuy.classList.add('active'); tSell.classList.remove('active');
+        bBuy.style.display = 'block'; bSell.style.display = 'none';
       } else {
-        tSell.classList.add('active');
-        tBuy.classList.remove('active');
-        bSell.style.display = 'block';
-        bBuy.style.display = 'none';
+        tSell.classList.add('active'); tBuy.classList.remove('active');
+        bSell.style.display = 'block'; bBuy.style.display = 'none';
       }
     }
 
@@ -431,53 +509,36 @@
     }
 
     function executeTrade(side) {
-      const p = parseFloat(document.getElementById('tradePrice').value);
-      const a = parseFloat(document.getElementById('tradeAmt').value);
-      const cost = p * a;
-
-      if(cost <= 0) return alert('সঠিক পরিমাণ দিন!');
+      const cost = parseFloat(document.getElementById('tradePrice').value) * parseFloat(document.getElementById('tradeAmt').value);
+      if(cost <= 0 || isNaN(cost)) return alert('সঠিক পরিমাণ দিন!');
       
       if(side === 'BUY') {
-        if(cost > currentBalance) {
-          alert('আপনার ব্যালেন্স অপর্যাপ্ত! অনুগ্রহ করে ডিপোজিট সেকশন থেকে ব্যালেন্স অ্যাড করুন।');
-          return;
-        }
+        if(cost > currentBalance) return alert('আপনার ব্যালেন্স অপর্যাপ্ত! ডিপোজিট সেকশন থেকে ব্যালেন্স অ্যাড করুন।');
         currentBalance -= cost;
       } else {
-        // Simple mock for Sell (adds value to balance)
         currentBalance += cost;
       }
-
       updateBalanceUI();
       alert(`সফল! ${activePair} এ আপনার ${side} অর্ডার সম্পন্ন হয়েছে।`);
     }
 
-    // Mini Orderbook
     function renderOB() {
       const ob = document.getElementById('obBox');
       ob.innerHTML = '';
-      
-      // Asks (Red)
       for(let i=4; i>=1; i--) {
         const p = (currentPrice + i*(currentPrice*0.0001)).toFixed(2);
         const q = (Math.random() * 2).toFixed(3);
         ob.innerHTML += `<div class="ob-row"><span class="ob-price ask mono">${p}</span><span class="ob-qty mono">${q}</span></div>`;
       }
-      
-      // Spread
       ob.innerHTML += `<div class="ob-spread mono" style="color: ${Math.random()>0.5 ? 'var(--accent-green)':'var(--accent-red)'};">${currentPrice.toFixed(2)}</div>`;
-      
-      // Bids (Green)
       for(let i=1; i<=4; i++) {
         const p = (currentPrice - i*(currentPrice*0.0001)).toFixed(2);
         const q = (Math.random() * 2).toFixed(3);
         ob.innerHTML += `<div class="ob-row"><span class="ob-price bid mono">${p}</span><span class="ob-qty mono">${q}</span></div>`;
       }
     }
-
-    // Init
-    renderOB();
-    setInterval(renderOB, 2000);
+    
+    renderOB(); setInterval(renderOB, 2000);
   </script>
 </body>
 </html>
