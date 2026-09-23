@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>EMON AI TRADER | Global Forex & Crypto Exchange</title>
+  <title>EMON OS | Ultimate Trader & Dev Workstation</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -18,6 +18,7 @@
       --accent-green: #10b981;
       --accent-red: #ef4444;
       --accent-gold: #f59e0b;
+      --accent-purple: #a855f7;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
@@ -37,7 +38,7 @@
       background: rgba(5, 8, 15, 0.95);
       backdrop-filter: blur(15px);
       border-bottom: 1px solid var(--border);
-      padding: 12px 2%;
+      padding: 12px 3%;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -49,11 +50,11 @@
     .brand { display: flex; align-items: center; gap: 10px; }
     .logo-ai {
       width: 42px; height: 42px;
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
       border-radius: 10px; display: flex; align-items: center; justify-content: center;
       color: #000; font-size: 1.3rem; box-shadow: 0 0 15px rgba(6, 182, 212, 0.5);
     }
-    .brand-title { font-size: 1.3rem; font-weight: 800; color: #fff; }
+    .brand-title { font-size: 1.3rem; font-weight: 800; color: #fff; letter-spacing: 1px; }
     .brand-title span { color: var(--accent-cyan); }
 
     .balance-box {
@@ -62,54 +63,82 @@
       font-weight: 700; color: var(--accent-green); font-size: 0.9rem;
     }
 
-    /* LAYOUT */
-    .dashboard {
-      display: grid;
-      grid-template-columns: 260px 2.5fr 1fr;
-      gap: 15px;
-      padding: 15px 2%;
-      flex: 1;
+    /* TICKER */
+    .ticker-bar {
+      background: rgba(10, 15, 30, 0.7);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 6px 3%;
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      white-space: nowrap;
+      font-size: 0.8rem;
+    }
+    .ticker-bar::-webkit-scrollbar { display: none; }
+    .t-item { display: flex; gap: 6px; color: #94a3b8; }
+    .t-price { color: var(--accent-cyan); font-weight: 700; }
+
+    /* TAB NAVIGATION */
+    .tab-navigation {
+      display: flex; justify-content: center; gap: 10px;
+      padding: 20px 2% 0; flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 10px 22px; background: var(--panel-bg);
+      border: 1px solid var(--border); color: #94a3b8;
+      border-radius: 12px; cursor: pointer; font-weight: 600; font-size: 0.85rem;
+      display: flex; align-items: center; gap: 8px; transition: 0.3s;
+    }
+    .tab-btn:hover, .tab-btn.active {
+      color: #fff; background: rgba(6, 182, 212, 0.15);
+      border-color: var(--accent-cyan); box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
     }
 
-    @media (max-width: 1100px) {
-      .dashboard { grid-template-columns: 1fr; }
+    /* WORKSPACE */
+    .workspace { padding: 20px 3% 40px; flex: 1; }
+    .tab-content { display: none; animation: fadeIn 0.3s ease; }
+    .tab-content.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
+
+    /* =========================================
+       TAB 1: TRADING DASHBOARD
+       ========================================= */
+    .dashboard {
+      display: grid; grid-template-columns: 260px 2.5fr 1fr; gap: 15px;
+    }
+    @media (max-width: 1100px) { .dashboard { grid-template-columns: 1fr; } }
 
     .panel {
-      background: var(--panel-bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 15px;
-      display: flex;
-      flex-direction: column;
+      background: var(--panel-bg); border: 1px solid var(--border);
+      border-radius: 12px; padding: 15px; display: flex; flex-direction: column;
     }
     .panel-head {
       font-size: 0.95rem; font-weight: 700; margin-bottom: 15px;
       border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;
-      display: flex; justify-content: space-between; align-items: center;
     }
 
-    /* LEFT: MARKET LIST */
-    .market-list { overflow-y: auto; flex: 1; }
+    /* Market List */
+    .market-list { overflow-y: auto; flex: 1; max-height: 500px; }
     .m-cat { font-size: 0.75rem; color: #64748b; font-weight: 700; margin: 10px 0 5px; text-transform: uppercase; }
     .m-item {
       display: flex; justify-content: space-between; align-items: center;
       padding: 10px; background: rgba(255,255,255,0.02); border-radius: 8px;
       margin-bottom: 6px; cursor: pointer; transition: 0.2s; border: 1px solid transparent;
     }
-    .m-item:hover, .m-item.active {
-      background: rgba(6, 182, 212, 0.1); border-color: var(--accent-cyan);
-    }
+    .m-item:hover, .m-item.active { background: rgba(6, 182, 212, 0.1); border-color: var(--accent-cyan); }
     .m-name { font-weight: 700; font-size: 0.85rem; }
     .m-price { font-size: 0.8rem; color: var(--accent-green); }
 
-    /* MID: CHART & AI SCANNER */
+    /* Chart & AI Scanner */
     .chart-box { height: 420px; border-radius: 10px; overflow: hidden; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05); }
 
     .ai-scanner-box {
       background: linear-gradient(180deg, rgba(5,8,15,1) 0%, rgba(6,182,212,0.1) 100%);
-      border: 1px solid var(--accent-cyan); border-radius: 12px; padding: 20px;
-      text-align: center; position: relative; overflow: hidden;
+      border: 1px solid var(--accent-cyan); border-radius: 12px; padding: 20px; text-align: center;
     }
 
     .ai-btn {
@@ -120,37 +149,22 @@
     }
     .ai-btn:hover { transform: scale(1.05); }
 
-    /* THE SIGNAL UI */
-    .signal-result { display: none; margin-top: 15px; }
-    .sig-layout { display: flex; justify-content: space-around; align-items: center; }
-    
-    .sig-arrow {
-      font-size: 4rem; animation: bounceSig 1.5s infinite;
-    }
-    @keyframes bounceSig {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-
-    .arrow-up { color: var(--accent-green); text-shadow: 0 0 25px var(--accent-green); }
-    .arrow-down { color: var(--accent-red); text-shadow: 0 0 25px var(--accent-red); }
-
-    .sig-details { text-align: left; }
-    .sig-verdict { font-size: 2.2rem; font-weight: 800; letter-spacing: 2px; }
-    .sig-metrics { font-size: 0.85rem; color: #94a3b8; margin-top: 5px; line-height: 1.6; }
-    
-    /* Loading Scanner */
     .scanner-line {
       display: none; width: 100%; height: 3px; background: var(--accent-cyan);
       box-shadow: 0 0 15px var(--accent-cyan); margin: 15px 0;
       animation: scanAnim 1s infinite alternate;
     }
-    @keyframes scanAnim {
-      from { transform: translateX(-100%); }
-      to { transform: translateX(100%); }
-    }
+    @keyframes scanAnim { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
 
-    /* RIGHT: TRADE PANEL */
+    .signal-result { display: none; margin-top: 15px; }
+    .sig-layout { display: flex; justify-content: space-around; align-items: center; }
+    .sig-arrow { font-size: 4rem; animation: bounceSig 1.5s infinite; }
+    @keyframes bounceSig { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    .arrow-up { color: var(--accent-green); text-shadow: 0 0 25px var(--accent-green); }
+    .arrow-down { color: var(--accent-red); text-shadow: 0 0 25px var(--accent-red); }
+    .sig-verdict { font-size: 2.2rem; font-weight: 800; letter-spacing: 2px; }
+
+    /* Trade Panel */
     .trade-input {
       background: #000; border: 1px solid rgba(255,255,255,0.1); padding: 12px;
       border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between;
@@ -165,121 +179,178 @@
     .btn-sell { background: var(--accent-red); color: #fff; box-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
     .trade-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
 
+    /* =========================================
+       TAB 2 & 3: TERMINAL & DEV TOOLS
+       ========================================= */
+    .terminal-card {
+      background: #030712; border-radius: 16px; border: 1px solid rgba(56, 189, 248, 0.3);
+      overflow: hidden; max-width: 900px; margin: 0 auto; box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    }
+    .terminal-header { background: #111827; padding: 12px 18px; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border); }
+    .terminal-dots { display: flex; gap: 7px; }
+    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot-red { background: #ef4444; } .dot-yellow { background: #eab308; } .dot-green { background: #22c55e; }
+    .terminal-body { padding: 20px; min-height: 400px; max-height: 500px; overflow-y: auto; color: #38bdf8; font-size: 0.9rem; line-height: 1.6; }
+    .terminal-output { margin-bottom: 14px; white-space: pre-wrap; }
+    .terminal-input { flex: 1; background: transparent; border: none; outline: none; color: #f1f5f9; font-size: 0.95rem; }
+
+    .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; max-width: 1100px; margin: 0 auto; }
+    .tool-card { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
+    .tool-card input, .tool-card textarea { width: 100%; background: #000; border: 1px solid var(--border); padding: 12px; border-radius: 8px; color: #fff; margin-bottom: 10px; outline: none; font-size: 0.85rem;}
+    .tool-card input:focus, .tool-card textarea:focus { border-color: var(--accent-cyan); }
+
   </style>
 </head>
 <body>
 
+  <!-- HEADER -->
   <header>
     <div class="brand">
-      <div class="logo-ai"><i class="fa-solid fa-radar"></i></div>
-      <div class="brand-title">EMON <span>AI TRADER</span></div>
+      <div class="logo-ai"><i class="fa-solid fa-microchip"></i></div>
+      <div class="brand-title">EMON <span>OS</span></div>
     </div>
     <div class="balance-box mono">
       <i class="fa-solid fa-wallet"></i> Balance: <span id="userBal">$10,000.00</span>
     </div>
   </header>
 
-  <div class="dashboard">
+  <!-- LIVE TICKER -->
+  <div class="ticker-bar">
+    <div class="t-item">EUR/USD: <span class="t-price mono">1.0845</span></div>
+    <div class="t-item">GBP/USD: <span class="t-price mono">1.2630</span></div>
+    <div class="t-item">BTC/USDT: <span class="t-price mono" id="t-btc">---</span></div>
+    <div class="t-item">ETH/USDT: <span class="t-price mono" id="t-eth">---</span></div>
+    <div class="t-item">USD/BDT: <span class="t-price mono">৳121.50</span></div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tab-navigation">
+    <button class="tab-btn active" onclick="switchTab('trading', this)"><i class="fa-solid fa-chart-line"></i> এআই ট্রেডিং ও মার্কেট</button>
+    <button class="tab-btn" onclick="switchTab('terminal', this)"><i class="fa-solid fa-terminal"></i> সাইবার টার্মিনাল</button>
+    <button class="tab-btn" onclick="switchTab('tools', this)"><i class="fa-solid fa-wand-magic-sparkles"></i> ক্রিয়েটর ও ডেভ টুলস</button>
+  </div>
+
+  <div class="workspace">
     
-    <!-- LEFT: Global Markets -->
-    <div class="panel">
-      <div class="panel-head">
-        <span><i class="fa-solid fa-globe"></i> গ্লোবাল মার্কেট</span>
-      </div>
-      <div class="market-list">
-        <div class="m-cat">🔥 ফরেক্স (Forex)</div>
-        <div class="m-item active" onclick="loadMarket('FX:EURUSD', 'EUR/USD', this)">
-          <span class="m-name mono">EUR/USD</span><span class="m-price mono">1.0845</span>
-        </div>
-        <div class="m-item" onclick="loadMarket('FX:GBPUSD', 'GBP/USD', this)">
-          <span class="m-name mono">GBP/USD</span><span class="m-price mono">1.2630</span>
-        </div>
-        <div class="m-item" onclick="loadMarket('FX:USDJPY', 'USD/JPY', this)">
-          <span class="m-name mono">USD/JPY</span><span class="m-price mono">150.20</span>
-        </div>
-        <div class="m-item" onclick="loadMarket('FX:AUDUSD', 'AUD/USD', this)">
-          <span class="m-name mono">AUD/USD</span><span class="m-price mono">0.6540</span>
-        </div>
-        <div class="m-item" onclick="loadMarket('FX:USDCHF', 'USD/CHF', this)">
-          <span class="m-name mono">USD/CHF</span><span class="m-price mono">0.8820</span>
+    <!-- ==============================================
+         TAB 1: TRADING DASHBOARD
+         ============================================== -->
+    <div id="tab-trading" class="tab-content active">
+      <div class="dashboard">
+        
+        <!-- Left: Market List -->
+        <div class="panel">
+          <div class="panel-head"><span><i class="fa-solid fa-globe"></i> গ্লোবাল মার্কেট</span></div>
+          <div class="market-list">
+            <div class="m-cat">🔥 ফরেক্স (Forex)</div>
+            <div class="m-item active" onclick="loadMarket('FX:EURUSD', 'EUR/USD', this)">
+              <span class="m-name mono">EUR/USD</span><span class="m-price mono">1.0845</span>
+            </div>
+            <div class="m-item" onclick="loadMarket('FX:GBPUSD', 'GBP/USD', this)">
+              <span class="m-name mono">GBP/USD</span><span class="m-price mono">1.2630</span>
+            </div>
+            <div class="m-item" onclick="loadMarket('FX:USDJPY', 'USD/JPY', this)">
+              <span class="m-name mono">USD/JPY</span><span class="m-price mono">150.20</span>
+            </div>
+            <div class="m-cat" style="margin-top:15px;">⚡ ক্রিপ্টো (Crypto)</div>
+            <div class="m-item" onclick="loadMarket('BINANCE:BTCUSDT', 'BTC/USDT', this)">
+              <span class="m-name mono">BTC/USDT</span><span class="m-price mono" id="m-btc">---</span>
+            </div>
+            <div class="m-item" onclick="loadMarket('BINANCE:ETHUSDT', 'ETH/USDT', this)">
+              <span class="m-name mono">ETH/USDT</span><span class="m-price mono" id="m-eth">---</span>
+            </div>
+          </div>
         </div>
 
-        <div class="m-cat" style="margin-top:20px;">⚡ ক্রিপ্টো (Crypto)</div>
-        <div class="m-item" onclick="loadMarket('BINANCE:BTCUSDT', 'BTC/USDT', this)">
-          <span class="m-name mono">BTC/USDT</span><span class="m-price mono">84,250.0</span>
+        <!-- Mid: Chart & AI Scanner -->
+        <div class="panel" style="padding: 10px;">
+          <div class="chart-box">
+            <iframe id="tvChart" src="https://s.tradingview.com/widgetembed/?symbol=FX%3AEURUSD&interval=1&theme=dark&style=1&timezone=Asia%2FDhaka" style="width: 100%; height: 100%; border: none;"></iframe>
+          </div>
+
+          <div class="ai-scanner-box">
+            <button class="ai-btn" id="aiBtn" onclick="runAIAnalysis()">
+              <i class="fa-solid fa-microchip"></i> <span id="currentPairText">EUR/USD</span> স্ক্যান করুন
+            </button>
+            <div class="scanner-line" id="scanLine"></div>
+            
+            <div class="signal-result" id="sigResult">
+              <div class="sig-layout">
+                <div class="sig-arrow" id="sigIcon"><i class="fa-solid fa-arrow-up"></i></div>
+                <div style="text-align: left;">
+                  <div class="sig-verdict" id="sigText">STRONG BUY</div>
+                  <div class="mono" style="font-size:0.85rem; color:#94a3b8; margin-top:5px; line-height: 1.6;">
+                    <i class="fa-solid fa-bullseye"></i> নিখুঁত সিগন্যাল: <span id="sigConf" style="color:var(--accent-cyan);">94%</span><br>
+                    <i class="fa-solid fa-chart-line"></i> টেকনিক্যাল ভিউ: <span id="sigTech" style="color:var(--accent-green);">Oversold (UP)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="m-item" onclick="loadMarket('BINANCE:ETHUSDT', 'ETH/USDT', this)">
-          <span class="m-name mono">ETH/USDT</span><span class="m-price mono">2,660.5</span>
-        </div>
-        <div class="m-item" onclick="loadMarket('BINANCE:SOLUSDT', 'SOL/USDT', this)">
-          <span class="m-name mono">SOL/USDT</span><span class="m-price mono">114.50</span>
+
+        <!-- Right: Trade Panel -->
+        <div class="panel">
+          <div class="panel-head"><span><i class="fa-solid fa-bolt" style="color:var(--accent-gold);"></i> ট্রেড এন্ট্রি</span></div>
+          <div style="font-size:0.8rem; color:#94a3b8; margin-bottom:5px;">ট্রেড সাইজ (Lot / Amount)</div>
+          <div class="trade-input">
+            <input type="number" id="tradeAmt" class="mono" value="1.00" oninput="calcTotal()" />
+            <span class="mono" style="color:#64748b;">Unit</span>
+          </div>
+          <div style="font-size:0.8rem; color:#94a3b8; margin-bottom:5px;">মার্জিন / ভ্যালু</div>
+          <div class="trade-input" style="margin-bottom: 25px;">
+            <input type="text" id="tradeVal" class="mono" value="$100.00" readonly />
+          </div>
+
+          <button class="trade-btn btn-buy" onclick="executeTrade('BUY')"><i class="fa-solid fa-arrow-trend-up"></i> BUY (লং)</button>
+          <button class="trade-btn btn-sell" onclick="executeTrade('SELL')"><i class="fa-solid fa-arrow-trend-down"></i> SELL (শর্ট)</button>
         </div>
       </div>
     </div>
 
-    <!-- MID: Chart & AI Analysis -->
-    <div class="panel" style="padding: 10px;">
-      <div class="chart-box">
-        <iframe 
-          id="tvChart"
-          src="https://s.tradingview.com/widgetembed/?symbol=FX%3AEURUSD&interval=1&theme=dark&style=1&timezone=Asia%2FDhaka" 
-          style="width: 100%; height: 100%; border: none;">
-        </iframe>
-      </div>
-
-      <!-- AI Signal Generator -->
-      <div class="ai-scanner-box">
-        <button class="ai-btn" id="aiBtn" onclick="runAIAnalysis()">
-          <i class="fa-solid fa-microchip"></i> <span id="currentPairText">EUR/USD</span> এনালাইসিস শুরু করুন
-        </button>
-        
-        <div class="scanner-line" id="scanLine"></div>
-
-        <div class="signal-result" id="sigResult">
-          <div class="sig-layout">
-            <!-- Huge Arrow Sign -->
-            <div class="sig-arrow" id="sigIcon"><i class="fa-solid fa-arrow-up"></i></div>
-            
-            <!-- Details -->
-            <div class="sig-details">
-              <div class="sig-verdict" id="sigText">STRONG BUY</div>
-              <div class="sig-metrics mono">
-                <i class="fa-solid fa-bullseye"></i> নিখুঁত সিগন্যাল: <span id="sigConf" style="color:var(--accent-cyan);">94%</span><br>
-                <i class="fa-solid fa-chart-line"></i> RSI (14): <span id="sigRsi">32.4 (Oversold)</span><br>
-                <i class="fa-solid fa-wave-square"></i> MACD: <span id="sigMacd">Bullish Crossover</span>
-              </div>
-            </div>
+    <!-- ==============================================
+         TAB 2: CYBER TERMINAL
+         ============================================== -->
+    <div id="tab-terminal" class="tab-content">
+      <div class="terminal-card">
+        <div class="terminal-header">
+          <div class="terminal-dots">
+            <div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div>
+          </div>
+          <span style="font-size: 0.8rem; color: #64748b;">root@emon-os:~</span>
+        </div>
+        <div class="terminal-body" id="termBody" onclick="document.getElementById('termInput').focus()">
+          <div class="terminal-output" id="termOutput">
+=====================================================
+⚡ স্বাগতম EMON OS সাইবার টার্মিনাল সিস্টেমে!
+কমান্ডের তালিকা দেখতে টাইপ করুন: 'help'
+=====================================================</div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="color:var(--accent-green); font-weight:700;">visitor@os:~$</span>
+            <input type="text" id="termInput" class="terminal-input" autocomplete="off" />
           </div>
         </div>
       </div>
     </div>
 
-    <!-- RIGHT: Trade Execution -->
-    <div class="panel">
-      <div class="panel-head">
-        <span><i class="fa-solid fa-bolt" style="color:var(--accent-gold);"></i> ট্রেড এন্ট্রি</span>
-      </div>
+    <!-- ==============================================
+         TAB 3: TOOLS & CREATOR STUDIO
+         ============================================== -->
+    <div id="tab-tools" class="tab-content">
+      <div class="tools-grid">
+        <div class="tool-card">
+          <div class="panel-head" style="color:var(--accent-cyan);"><i class="fa-solid fa-video"></i> এআই শর্টস/রিলস মেকার</div>
+          <input type="text" id="vidTopic" placeholder="ভিডিওর টপিক লিখুন..." />
+          <button class="trade-btn btn-buy" style="padding:10px; font-size:0.9rem;" onclick="makeScript()">স্ক্রিপ্ট তৈরি করুন</button>
+          <div id="vidRes" style="margin-top:10px; font-size:0.85rem; color:#94a3b8; display:none;"></div>
+        </div>
 
-      <div style="font-size:0.8rem; color:#94a3b8; margin-bottom:5px;">ট্রেড সাইজ (Lot / Amount)</div>
-      <div class="trade-input">
-        <input type="number" id="tradeAmt" class="mono" value="1.00" oninput="calcTotal()" />
-        <span class="mono" style="color:#64748b;">Unit</span>
-      </div>
-
-      <div style="font-size:0.8rem; color:#94a3b8; margin-bottom:5px;">মার্জিন / ভ্যালু</div>
-      <div class="trade-input" style="margin-bottom: 25px;">
-        <input type="text" id="tradeVal" class="mono" value="$100.00" readonly />
-      </div>
-
-      <button class="trade-btn btn-buy" onclick="executeTrade('BUY')">
-        <i class="fa-solid fa-arrow-trend-up"></i> BUY (লং)
-      </button>
-      <button class="trade-btn btn-sell" onclick="executeTrade('SELL')">
-        <i class="fa-solid fa-arrow-trend-down"></i> SELL (শর্ট)
-      </button>
-
-      <div style="margin-top:20px; font-size:0.75rem; color:#64748b; text-align:center;">
-        ১-মিনিট স্ক্যাল্পিংয়ের জন্য এআই সিগন্যাল অনুসরণ করুন।
+        <div class="tool-card">
+          <div class="panel-head" style="color:var(--accent-purple);"><i class="fa-solid fa-brackets-curly"></i> JSON ভ্যালিডেটর</div>
+          <textarea id="jsonIn" rows="4" placeholder='{"status":"ok"}'></textarea>
+          <button class="trade-btn" style="background:var(--accent-purple); color:#fff; padding:10px; font-size:0.9rem;" onclick="formatJSON()">ফর্ম্যাট করুন</button>
+          <div id="jsonRes" style="margin-top:5px; font-size:0.8rem;"></div>
+        </div>
       </div>
     </div>
 
@@ -289,99 +360,143 @@
     let activeSymbolName = 'EUR/USD';
     let balance = 10000.00;
 
-    // Switch Market Pair
+    // Tab Switching
+    function switchTab(tabId, elem) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      elem.classList.add('active');
+      document.getElementById(`tab-${tabId}`).classList.add('active');
+    }
+
+    // Trading: Switch Market Pair
     function loadMarket(tvSymbol, name, elem) {
-      // Update TradingView Widget
       document.getElementById('tvChart').src = `https://s.tradingview.com/widgetembed/?symbol=${tvSymbol}&interval=1&theme=dark&style=1&timezone=Asia%2FDhaka`;
-      
-      // Update UI Text
       activeSymbolName = name;
       document.getElementById('currentPairText').innerText = name;
-      
-      // Reset AI Box
       document.getElementById('aiBtn').style.display = 'inline-block';
       document.getElementById('sigResult').style.display = 'none';
-      
-      // Highlight Active Item
       document.querySelectorAll('.m-item').forEach(el => el.classList.remove('active'));
       elem.classList.add('active');
     }
 
-    // Run AI Analysis
+    // Trading: AI Scanner
     function runAIAnalysis() {
       const btn = document.getElementById('aiBtn');
       const scanLine = document.getElementById('scanLine');
-      const resultBox = document.getElementById('sigResult');
+      const resBox = document.getElementById('sigResult');
       
-      // Hide button, show scanner
       btn.style.display = 'none';
       scanLine.style.display = 'block';
-      resultBox.style.display = 'none';
+      resBox.style.display = 'none';
 
-      // Simulate AI Processing time (2 seconds)
       setTimeout(() => {
         scanLine.style.display = 'none';
-        generateSignal();
-        resultBox.style.display = 'block';
         
-        // Show button again to re-scan
+        const isUp = Math.random() > 0.5;
+        const icon = document.getElementById('sigIcon');
+        const text = document.getElementById('sigText');
+        
+        document.getElementById('sigConf').innerText = (Math.random() * 10 + 85).toFixed(1) + '%';
+        
+        icon.className = 'sig-arrow';
+        if (isUp) {
+          icon.innerHTML = '<i class="fa-solid fa-arrow-up"></i>';
+          icon.classList.add('arrow-up');
+          text.innerText = 'STRONG BUY';
+          text.style.color = 'var(--accent-green)';
+          document.getElementById('sigTech').innerText = 'Oversold (Uptrend)';
+          document.getElementById('sigTech').style.color = 'var(--accent-green)';
+        } else {
+          icon.innerHTML = '<i class="fa-solid fa-arrow-down"></i>';
+          icon.classList.add('arrow-down');
+          text.innerText = 'STRONG SELL';
+          text.style.color = 'var(--accent-red)';
+          document.getElementById('sigTech').innerText = 'Overbought (Downtrend)';
+          document.getElementById('sigTech').style.color = 'var(--accent-red)';
+        }
+
+        resBox.style.display = 'block';
         btn.innerHTML = '<i class="fa-solid fa-rotate-right"></i> পুনরায় স্ক্যান করুন';
         btn.style.display = 'inline-block';
         btn.style.marginTop = '15px';
       }, 2000);
     }
 
-    function generateSignal() {
-      const isUp = Math.random() > 0.5; // Randomly decide UP or DOWN trend
-      const rsi = (Math.random() * 60 + 20).toFixed(1);
-      const conf = (Math.random() * 10 + 85).toFixed(1); // 85% to 95% confidence
-
-      const icon = document.getElementById('sigIcon');
-      const text = document.getElementById('sigText');
-      const rsiElem = document.getElementById('sigRsi');
-      const macdElem = document.getElementById('sigMacd');
-      document.getElementById('sigConf').innerText = conf + '%';
-
-      icon.className = 'sig-arrow'; // Reset classes
-      
-      if (isUp) {
-        // UP / BUY SIGNAL
-        icon.innerHTML = '<i class="fa-solid fa-arrow-up"></i>';
-        icon.classList.add('arrow-up');
-        text.innerText = 'STRONG BUY';
-        text.style.color = 'var(--accent-green)';
-        rsiElem.innerText = `${rsi} (Oversold/Uptrend)`;
-        macdElem.innerText = 'Bullish Crossover (Green)';
-      } else {
-        // DOWN / SELL SIGNAL
-        icon.innerHTML = '<i class="fa-solid fa-arrow-down"></i>';
-        icon.classList.add('arrow-down');
-        text.innerText = 'STRONG SELL';
-        text.style.color = 'var(--accent-red)';
-        rsiElem.innerText = `${rsi} (Overbought/Downtrend)`;
-        macdElem.innerText = 'Bearish Crossover (Red)';
-      }
-    }
-
-    // Trade Logic
+    // Trading: Order Execution
     function calcTotal() {
       const amt = parseFloat(document.getElementById('tradeAmt').value) || 0;
-      // Fixed demo calculation (1 unit = $100 margin)
       document.getElementById('tradeVal').value = `$${(amt * 100).toFixed(2)}`;
     }
 
     function executeTrade(side) {
-      const valStr = document.getElementById('tradeVal').value.replace('$', '');
-      const cost = parseFloat(valStr);
-
+      const cost = parseFloat(document.getElementById('tradeVal').value.replace('$', ''));
       if (cost <= 0) return alert('সঠিক পরিমাণ দিন!');
-      if (cost > balance) return alert('আপনার ব্যালেন্স অপর্যাপ্ত!');
-
-      balance -= cost; // Deduct margin
+      if (cost > balance) return alert('ব্যালেন্স অপর্যাপ্ত!');
+      balance -= cost;
       document.getElementById('userBal').innerText = `$${balance.toLocaleString('en-US', {minimumFractionDigits:2})}`;
-      
-      const sideName = side === 'BUY' ? 'লং (BUY)' : 'শর্ট (SELL)';
-      alert(`সফল! ${activeSymbolName} এ আপনার ${sideName} অর্ডার প্লেস হয়েছে।`);
+      alert(`সফল! ${activeSymbolName} এ ${side} অর্ডার সম্পন্ন।`);
+    }
+
+    // Live Crypto Fetcher (Background)
+    async function fetchCrypto() {
+      try {
+        const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbols=["BTCUSDT","ETHUSDT"]');
+        const data = await res.json();
+        data.forEach(t => {
+          const val = parseFloat(t.price).toLocaleString('en-US', {minimumFractionDigits:2});
+          if(t.symbol==='BTCUSDT') {
+            document.getElementById('t-btc').innerText = `$${val}`;
+            document.getElementById('m-btc').innerText = val;
+          }
+          if(t.symbol==='ETHUSDT') {
+            document.getElementById('t-eth').innerText = `$${val}`;
+            document.getElementById('m-eth').innerText = val;
+          }
+        });
+      } catch(e) {}
+    }
+    setInterval(fetchCrypto, 4000); fetchCrypto();
+
+    // Terminal Logic
+    const cmdList = {
+      help: `কমান্ড তালিকা:\n• emon : ডেভেলপার প্রোফাইল\n• clear : স্ক্রিন পরিষ্কার\n• date : বর্তমান সময়`,
+      emon: `[+] নাম: Emon Khan\n[+] প্রজেক্ট: EMON OS & Trading Terminal\n[+] স্কিল: Python, Web, Automation`,
+      date: () => new Date().toLocaleString('bn-BD')
+    };
+
+    document.getElementById('termInput').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        const cmd = this.value.trim().toLowerCase();
+        if(!cmd) return;
+        const out = document.getElementById('termOutput');
+        
+        if (cmd === 'clear') { out.innerText = ''; this.value = ''; return; }
+        
+        let res = cmdList[cmd] ? (typeof cmdList[cmd] === 'function' ? cmdList[cmd]() : cmdList[cmd]) : `কমান্ড পাওয়া যায়নি: ${cmd}`;
+        out.innerText += `\nvisitor@os:~$ ${cmd}\n${res}\n`;
+        this.value = '';
+        document.getElementById('termBody').scrollTop = 9999;
+      }
+    });
+
+    // Tools Logic
+    function makeScript() {
+      const top = document.getElementById('vidTopic').value;
+      if(!top) return alert('টপিক লিখুন');
+      const box = document.getElementById('vidRes');
+      box.style.display = 'block';
+      box.innerHTML = `<b style="color:var(--accent-cyan)">হুক:</b> "${top} এর গোপন ট্রিকস!"<br><b style="color:var(--accent-green)">স্ক্রিপ্ট:</b> "আজকে আপনাদের এমন একটি ট্রিকস শেখাবো..."<br><b style="color:var(--accent-purple)">ট্যাগ:</b> #Trending #${top.replace(/\s/g,'')}`;
+    }
+
+    function formatJSON() {
+      const inp = document.getElementById('jsonIn').value;
+      const res = document.getElementById('jsonRes');
+      try {
+        document.getElementById('jsonIn').value = JSON.stringify(JSON.parse(inp), null, 2);
+        res.style.color = 'var(--accent-green)'; res.innerText = '✓ JSON সঠিক!';
+      } catch (e) {
+        res.style.color = 'var(--accent-red)'; res.innerText = '✕ ইনভ্যালিড JSON!';
+      }
     }
   </script>
 </body>
